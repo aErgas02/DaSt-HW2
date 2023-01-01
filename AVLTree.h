@@ -28,34 +28,20 @@ protected:
     int in_order_internal(Node<T> *pRoot, T *arr, int n, int index = 0);
 
 public:
-    const Node<T> *get_root() {
+    const Node<T> *get_root() const {
         return root;
     }
     Node<T> *delete_node(T obj);
     Node<T> *insert(T obj);
-    bool object_exists(T obj);
     Node<T> *find_object(T obj);
+    bool object_exists(T obj);
     void update_tree_external(Node<T> *pRoot);
+
     explicit AVLTree(int (*compare)(T *, T *)) : compare(compare) {}
     ~AVLTree() {
         recursive_delete(this->root);
     }
-    T get_max();
-    int get_tree_size();
-    void set_new_head(Node<T> * new_head, int size){
-        this->root = new_head;
-        this->tree_size = size;
-        if (root != nullptr) {
-            update_max();
-        }
-    }
-    void in_order(T *arr, int n);
-    int countNodes(const Node<T> * node) {
-        if (node == nullptr) {
-            return 0;
-        }
-        return 1 + countNodes(node->left) + countNodes(node->right);
-    }
+
 };
 
 
@@ -222,22 +208,6 @@ void AVLTree<T>::update_tree_external(Node<T> *pRoot) {
 template<class T>
 void AVLTree<T>::update_max() {
     m_max_val = root->get_biggest_child()->val;
-}
-
-template<class T>
-T AVLTree<T>::get_max() {
-    return this->m_max_val;
-}
-
-template<class T>
-int AVLTree<T>::get_tree_size() {
-    return tree_size;
-}
-
-template<class T>
-void AVLTree<T>::in_order(T *arr, int n) {
-    if (arr != nullptr)
-        in_order_internal(root, arr, n);
 }
 
 template<class T>
