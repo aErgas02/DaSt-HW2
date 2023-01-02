@@ -4,7 +4,9 @@
 
 #include "Team.h"
 
-Team::Team(int teamId) : m_id(teamId) {}
+Team::Team(int teamId) :
+    m_id(teamId)
+    {}
 
 int Team::getId() const {
     return m_id;
