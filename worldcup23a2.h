@@ -16,12 +16,19 @@
 #define WORLDCUP23A2_H_
 
 #include "wet2util.h"
+#include "AVLTree.h"
+#include "UnionFind.h"
+#include "Team.h"
+#include "Player.h"
 
 class world_cup_t {
 private:
 	//
 	// Here you may add anything you want
 	//
+
+    AVLTree<std::shared_ptr<Team>> *m_teams;
+    UnionFind<Player> m_players;
 	
 public:
 	// <DO-NOT-MODIFY> {

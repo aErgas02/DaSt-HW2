@@ -1,19 +1,40 @@
 #include "worldcup23a2.h"
 
+int compT_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b) {
+    return (*a)->getId() == (*b)->getId() ? 0 : (*a)->getId() < (*b)->getId() ? -1 : 1;
+}
+
 world_cup_t::world_cup_t()
 {
 	// TODO: Your code goes here
+    m_teams = new AVLTree<std::shared_ptr<Team>>(compT_func);
+    m_players = UnionFind<Player>();
 }
 
 world_cup_t::~world_cup_t()
 {
 	// TODO: Your code goes here
+    delete m_teams;
 }
 
 StatusType world_cup_t::add_team(int teamId)
 {
 	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    try {
+        if(teamId <= 0) {
+            return StatusType::INVALID_INPUT;
+        } else {
+            auto new_team = std::make_shared<Team>(teamId);
+            if(m_teams->object_exists(new_team)) {
+                return StatusType::FAILURE;
+            } else {
+                m_teams->insert(new_team);
+                return StatusType::SUCCESS;
+            }
+        }
+    } catch (std::bad_alloc &e){
+        return StatusType::INVALID_INPUT;
+    }
 }
 
 StatusType world_cup_t::remove_team(int teamId)
