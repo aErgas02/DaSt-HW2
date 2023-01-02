@@ -15,6 +15,7 @@ public:
     void (* blackBox)(T&, T&);
     void insert(int key, T obj);
     void unify(UFNode<T> &setBuyer, UFNode<T> &setBought);
+    bool isPlayerExist(int key);
     UFNode<T> & find(int key);
 
 private:
@@ -46,7 +47,7 @@ UFNode<T> &UnionFind<T>::getBiggerSet(UFNode<T> &setA, UFNode<T> &setB) {
 
 template<class T>
 void UnionFind<T>::UnionBySize(UFNode<T> &biggerSet, UFNode<T> &smallerSet) {
-//    smallerSet.parent = &biggerSet;
+    smallerSet.parent = &biggerSet;
 }
 
 template<class T>
@@ -82,6 +83,14 @@ void UnionFind<T>::insert(int key, T obj) {
     UFNode<T> node{obj};
     std::pair<int, UFNode<T>> pa{key, node};
     m_hashTable.insert(pa);
+}
+
+template<class T>
+bool UnionFind<T>::isPlayerExist(int key) {
+    if(m_hashTable.find(key) == m_hashTable.end()) {
+        return false;
+    }
+    return true;
 }
 
 

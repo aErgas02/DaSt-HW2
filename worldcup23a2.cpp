@@ -62,7 +62,28 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
                                    int ability, int cards, bool goalKeeper)
 {
 	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    try {
+        if (playerId <= 0 || teamId <= 0 || !spirit.isvalid() || gamesPlayed < 0 || cards < 0) {
+            return StatusType::INVALID_INPUT;
+        } else {
+            // Player params are valid.
+            auto team = std::make_shared<Team>(teamId);
+            auto team_node = TreeNode<std::shared_ptr<Team>>(std::make_shared<Team>(teamId));
+            if (m_teams->object_exists(team)) {
+                // Add to team
+                auto player = Player(playerId, spirit, gamesPlayed, ability, cards, goalKeeper);
+                if (m_players.isPlayerExist(playerId)) {
+                    return StatusType::FAILURE;
+                }
+                m_players.insert(playerId, player);
+                return StatusType::SUCCESS;
+            } else {
+                return StatusType::FAILURE;
+            }
+        }
+    } catch(std::bad_alloc &e) {
+        return StatusType::ALLOCATION_ERROR;
+    }
 }
 
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)

@@ -6,10 +6,12 @@
 #define WET2_PLAYER_H
 
 
+#include "wet2util.h"
+
 class Player {
 
 public:
-    Player(int id, int spirit, int numOfGames, int ability, int numOfCards, bool goalKeeper);
+    Player(int id, permutation_t spirit, int numOfGames, int ability, int numOfCards, bool goalKeeper);
 
     int get_id() const;
     int get_spirit();
@@ -21,12 +23,12 @@ public:
 private:
 //    Team &m_team;
     int m_id;
-    int m_spirit;
     int m_numOfGames;
     int m_ability;
     int m_numOfCards;
     int m_initialTeamGames;
     bool m_goalKeeper;
+    permutation_t m_spirit;
 };
 
 

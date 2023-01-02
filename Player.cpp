@@ -4,7 +4,7 @@
 
 #include "Player.h"
 
-Player::Player(int id, int spirit, int numOfGames, int ability, int numOfCards, bool goalKeeper) :
+Player::Player(int id, permutation_t spirit, int numOfGames, int ability, int numOfCards, bool goalKeeper) :
     m_id(id),
     m_spirit(spirit),
     m_numOfGames(numOfGames),
