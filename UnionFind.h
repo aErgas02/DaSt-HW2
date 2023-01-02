@@ -23,7 +23,6 @@ private:
     void compress(UFNode<T> *node, UFNode<T> *root);
 
     UFNode<T> * getRoot(UFNode<T> *setA);
-    UFNode<T> & getBiggerSet(UFNode<T> &setA, UFNode<T> &setB);
 
     std::unordered_map<int, UFNode<T>> m_hashTable;
 };
@@ -36,13 +35,6 @@ void UnionFind<T>::unify(UFNode<T> &setBuyer, UFNode<T> &setBought) {
         UnionBySize(setBought, setBuyer);
         setBought.parent = &setBuyer;
     }
-}
-
-template<class T>
-UFNode<T> &UnionFind<T>::getBiggerSet(UFNode<T> &setA, UFNode<T> &setB) {
-    if(setA.height >= setB.height)
-        return setA;
-    return setB;
 }
 
 template<class T>

@@ -24,7 +24,7 @@ StatusType world_cup_t::add_team(int teamId)
         if(teamId <= 0) {
             return StatusType::INVALID_INPUT;
         } else {
-            auto new_team = std::make_shared<Team>(teamId);
+            auto new_team = std::make_shared<Team>(teamId, m_players);
             if(m_teams->object_exists(new_team)) {
                 return StatusType::FAILURE;
             } else {
@@ -44,7 +44,7 @@ StatusType world_cup_t::remove_team(int teamId)
         if(teamId <= 0) {
             return StatusType::INVALID_INPUT;
         } else {
-            auto team = std::make_shared<Team>(teamId);
+            auto team = std::make_shared<Team>(teamId, m_players);
             if(m_teams->object_exists(team)) {
                 m_teams->delete_node(team);
                 return StatusType::SUCCESS;
@@ -67,15 +67,11 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
             return StatusType::INVALID_INPUT;
         } else {
             // Player params are valid.
-            auto team = std::make_shared<Team>(teamId);
-            auto team_node = TreeNode<std::shared_ptr<Team>>(std::make_shared<Team>(teamId));
+            auto team = std::make_shared<Team>(teamId, m_players);
+            auto team_node = TreeNode<std::shared_ptr<Team>>(team);
             if (m_teams->object_exists(team)) {
                 // Add to team
-                auto player = Player(playerId, spirit, gamesPlayed, ability, cards, goalKeeper);
-                if (m_players.isPlayerExist(playerId)) {
-                    return StatusType::FAILURE;
-                }
-                m_players.insert(playerId, player);
+                auto player = Player(playerId, spirit, gamesPlayed, ability, cards, goalKeeper, m_players);
                 return StatusType::SUCCESS;
             } else {
                 return StatusType::FAILURE;
