@@ -33,14 +33,28 @@ StatusType world_cup_t::add_team(int teamId)
             }
         }
     } catch (std::bad_alloc &e){
-        return StatusType::INVALID_INPUT;
+        return StatusType::ALLOCATION_ERROR;
     }
 }
 
 StatusType world_cup_t::remove_team(int teamId)
 {
 	// TODO: Your code goes here
-	return StatusType::FAILURE;
+    try {
+        if(teamId <= 0) {
+            return StatusType::INVALID_INPUT;
+        } else {
+            auto team = std::make_shared<Team>(teamId);
+            if(m_teams->object_exists(team)) {
+                m_teams->delete_node(team);
+                return StatusType::SUCCESS;
+            } else {
+                return StatusType::FAILURE;
+            }
+        }
+    } catch (std::bad_alloc &e) {
+        return StatusType::ALLOCATION_ERROR;
+    }
 }
 
 StatusType world_cup_t::add_player(int playerId, int teamId,
