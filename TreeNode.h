@@ -1,39 +1,37 @@
 #ifndef MAIN23A1_CPP_NODE_H
 #define MAIN23A1_CPP_NODE_H
 
-#endif //MAIN23A1_CPP_NODE_H
-
 template <class T>
-struct Node {
+struct TreeNode {
 public:
     T val;
 
-    struct Node *left = nullptr;
-    struct Node *right = nullptr;
-    struct Node *parent = nullptr;
+    struct TreeNode *left = nullptr;
+    struct TreeNode *right = nullptr;
+    struct TreeNode *parent = nullptr;
 
     int height = 0; // Added as leaf.
     int bf = 0;
 
-    explicit Node(T val) : val(val)
+    explicit TreeNode(T val) : val(val)
     {}
 
-    explicit Node(T val, Node *parent) : val(val), parent(parent)
+    explicit TreeNode(T val, TreeNode *parent) : val(val), parent(parent)
     {}
 
     bool is_right_child();
 
-    ~Node()= default;
+    ~TreeNode()= default;
 
-    Node *get_biggest_child() {
-        Node* node = this;
+    TreeNode *get_biggest_child() {
+        TreeNode* node = this;
         while (node->right != nullptr)
             node = node->right;
         return node;
     }
 
-    Node *get_smallest_child(){
-        Node* node = this;
+    TreeNode *get_smallest_child(){
+        TreeNode* node = this;
         while(node->left != nullptr)
             node = node->left;
         return node;
@@ -41,7 +39,7 @@ public:
 };
 
 template<class T>
-bool Node<T>::is_right_child() {
+bool TreeNode<T>::is_right_child() {
     if (parent != nullptr) {
         return parent->right == this;
     }
@@ -49,12 +47,12 @@ bool Node<T>::is_right_child() {
 }
 
 template<class T>
-int get_height(Node<T> *node) {
+int get_height(TreeNode<T> *node) {
     return (node == nullptr) ? -1 : node->height;
 }
 
 template<class T>
-void update_height(Node<T> *node) {
+void update_height(TreeNode<T> *node) {
     if (node == nullptr) return;
     int left_h = get_height(node->left);
     int right_h = get_height(node->right);
@@ -62,13 +60,13 @@ void update_height(Node<T> *node) {
 }
 
 template<class T>
-void update_balance_factor(Node<T> *node) {
+void update_balance_factor(TreeNode<T> *node) {
     if (node == nullptr) return;
     node->bf = get_height(node->left) - get_height(node->right);
 }
 
 template<class T>
-Node<T> *perform_rotation(Node<T> *node) {
+TreeNode<T> *perform_rotation(TreeNode<T> *node) {
     if (node->bf == 2) {
         return node->left->bf > -1 ? LL(node) : LR(node);
     } else if (node->bf == -2) {
@@ -78,8 +76,8 @@ Node<T> *perform_rotation(Node<T> *node) {
 }
 
 template<class T>
-Node<T> *LL(Node<T> *node) {
-    Node<T> *new_root, *old_root, *p;
+TreeNode<T> *LL(TreeNode<T> *node) {
+    TreeNode<T> *new_root, *old_root, *p;
 
 
     // Hold the data
@@ -106,8 +104,8 @@ Node<T> *LL(Node<T> *node) {
 }
 
 template<class T>
-Node<T> *RR(Node<T> *node) {
-    Node<T> *new_root, *old_root, *p;
+TreeNode<T> *RR(TreeNode<T> *node) {
+    TreeNode<T> *new_root, *old_root, *p;
 
     // Hold the data
     old_root = node;
@@ -133,8 +131,8 @@ Node<T> *RR(Node<T> *node) {
 }
 
 template<class T>
-Node<T> *LR(Node<T> *node) {
-    Node<T> *left = node->left;
+TreeNode<T> *LR(TreeNode<T> *node) {
+    TreeNode<T> *left = node->left;
 
     // Rotate pointers with RR and LL
     node->left = RR(left);
@@ -142,10 +140,12 @@ Node<T> *LR(Node<T> *node) {
 }
 
 template<class T>
-Node<T> *RL(Node<T> *node) {
-    Node<T> *right = node->right;
+TreeNode<T> *RL(TreeNode<T> *node) {
+    TreeNode<T> *right = node->right;
 
     // Rotate pointers with RR and LL
     node->right = LL(right);
     return (RR(node));
 }
+
+#endif //MAIN23A1_CPP_NODE_H

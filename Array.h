@@ -13,6 +13,10 @@ public:
         m_size(size),
         m_ptr{new T[size]} {}
 
+        ~Array() {
+//        delete[] m_ptr;
+    }
+
     T *get() {
         return m_ptr;
     }

@@ -1,7 +1,7 @@
 #ifndef MAIN23A1_CPP_AVLTREE_H
 #define MAIN23A1_CPP_AVLTREE_H
 
-#include "Node.h"
+#include "TreeNode.h"
 #include "exceptions.h"
 
 #define RIGHT 1
@@ -12,30 +12,30 @@ template<class T>
 class AVLTree {
 
 private:
-    Node<T> *root = nullptr;
+    TreeNode<T> *root = nullptr;
     T m_max_val{};
     int (*compare)(T *, T *);
     int tree_size = 0;
 
 protected:
-    bool is_object_exists(Node<T> *pRoot, T obj);
-    Node<T> *find_object(Node<T> *pRoot, T obj);
-    Node<T> *insert(Node<T> *pRoot, T obj);
-    Node<T> *delete_node(Node<T> *pRoot, T obj);
-    Node<T> *update_tree(Node<T> *node);
-    void recursive_delete(Node<T> *d_node);
+    bool is_object_exists(TreeNode<T> *pRoot, T obj);
+    TreeNode<T> *find_object(TreeNode<T> *pRoot, T obj);
+    TreeNode<T> *insert(TreeNode<T> *pRoot, T obj);
+    TreeNode<T> *delete_node(TreeNode<T> *pRoot, T obj);
+    TreeNode<T> *update_tree(TreeNode<T> *node);
+    void recursive_delete(TreeNode<T> *d_node);
     void update_max();
-    int in_order_internal(Node<T> *pRoot, T *arr, int n, int index = 0);
+    int in_order_internal(TreeNode<T> *pRoot, T *arr, int n, int index = 0);
 
 public:
-    const Node<T> *get_root() const {
+    const TreeNode<T> *get_root() const {
         return root;
     }
-    Node<T> *delete_node(T obj);
-    Node<T> *insert(T obj);
-    Node<T> *find_object(T obj);
+    TreeNode<T> *delete_node(T obj);
+    TreeNode<T> *insert(T obj);
+    TreeNode<T> *find_object(T obj);
     bool object_exists(T obj);
-    void update_tree_external(Node<T> *pRoot);
+    void update_tree_external(TreeNode<T> *pRoot);
 
     explicit AVLTree(int (*compare)(T *, T *)) : compare(compare) {}
     ~AVLTree() {
@@ -46,7 +46,7 @@ public:
 
 
 template<class T>
-void AVLTree<T>::recursive_delete(Node<T> *d_node) {
+void AVLTree<T>::recursive_delete(TreeNode<T> *d_node) {
     if (d_node == nullptr) {
         return;
     }
@@ -62,7 +62,7 @@ bool AVLTree<T>::object_exists(T obj) {
 }
 
 template<class T>
-Node<T> *AVLTree<T>::insert(T obj) {
+TreeNode<T> *AVLTree<T>::insert(T obj) {
     root = insert(root, obj);
     update_max();
     tree_size++;
@@ -70,9 +70,9 @@ Node<T> *AVLTree<T>::insert(T obj) {
 }
 
 template<class T>
-Node<T> *AVLTree<T>::insert(Node<T> *pRoot, T obj) {
+TreeNode<T> *AVLTree<T>::insert(TreeNode<T> *pRoot, T obj) {
     if (pRoot == nullptr) {
-        return new Node<T>(obj);
+        return new TreeNode<T>(obj);
     }
     if (compare(&obj, &pRoot->val) == LEFT) {
         pRoot->left = insert(pRoot->left, obj);
@@ -91,7 +91,7 @@ Node<T> *AVLTree<T>::insert(Node<T> *pRoot, T obj) {
 }
 
 template<class T>
-bool AVLTree<T>::is_object_exists(Node<T> *pRoot, T obj) {
+bool AVLTree<T>::is_object_exists(TreeNode<T> *pRoot, T obj) {
     if (pRoot == nullptr) { return false; }
 
     int comparison = compare(&obj, &pRoot->val);
@@ -109,7 +109,7 @@ bool AVLTree<T>::is_object_exists(Node<T> *pRoot, T obj) {
 }
 
 template<class T>
-Node<T> *AVLTree<T>::delete_node(Node<T> *pRoot, T obj) {
+TreeNode<T> *AVLTree<T>::delete_node(TreeNode<T> *pRoot, T obj) {
 
     if (pRoot->left == nullptr && pRoot->right == nullptr) {
         tree_size--;
@@ -117,7 +117,7 @@ Node<T> *AVLTree<T>::delete_node(Node<T> *pRoot, T obj) {
         return nullptr;
     }
 
-    Node<T> *node_to_delete = nullptr;
+    TreeNode<T> *node_to_delete = nullptr;
 
     if (compare(&obj, &pRoot->val) == LEFT) {
         pRoot->left = delete_node(pRoot->left, obj);
@@ -152,7 +152,7 @@ Node<T> *AVLTree<T>::delete_node(Node<T> *pRoot, T obj) {
 }
 
 template<class T>
-Node<T> *AVLTree<T>::delete_node(T obj) {
+TreeNode<T> *AVLTree<T>::delete_node(T obj) {
     if (is_object_exists(root, obj)) {
         root = delete_node(root, obj);
         if (root) { update_max();} else m_max_val = nullptr;
@@ -162,7 +162,7 @@ Node<T> *AVLTree<T>::delete_node(T obj) {
 }
 
 template<class T>
-Node<T> *AVLTree<T>::update_tree(Node<T> *node) {
+TreeNode<T> *AVLTree<T>::update_tree(TreeNode<T> *node) {
     if (node) {
         // Go up through the tree until we reach the root and update each node
         update_height(node);
@@ -178,7 +178,7 @@ Node<T> *AVLTree<T>::update_tree(Node<T> *node) {
 }
 
 template<class T>
-Node<T> *AVLTree<T>::find_object(Node<T> *pRoot, T obj) {
+TreeNode<T> *AVLTree<T>::find_object(TreeNode<T> *pRoot, T obj) {
     if (pRoot == nullptr) { return nullptr; }
 
     int comparison = compare(&obj, &pRoot->val);
@@ -196,12 +196,12 @@ Node<T> *AVLTree<T>::find_object(Node<T> *pRoot, T obj) {
 }
 
 template<class T>
-Node<T> *AVLTree<T>::find_object(T obj) {
+TreeNode<T> *AVLTree<T>::find_object(T obj) {
     return find_object(this->root, obj);
 }
 
 template<class T>
-void AVLTree<T>::update_tree_external(Node<T> *pRoot) {
+void AVLTree<T>::update_tree_external(TreeNode<T> *pRoot) {
     update_tree(pRoot);
 }
 
@@ -211,7 +211,7 @@ void AVLTree<T>::update_max() {
 }
 
 template<class T>
-int AVLTree<T>::in_order_internal(Node<T> *pRoot, T *arr, int n, int index) {
+int AVLTree<T>::in_order_internal(TreeNode<T> *pRoot, T *arr, int n, int index) {
     if (pRoot == nullptr)
         return index;
 
