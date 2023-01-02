@@ -72,7 +72,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
             if (m_teams->object_exists(team)) {
                 // Add to team
                 auto player = Player(playerId, spirit, gamesPlayed, ability, cards, goalKeeper, m_players);
-                return StatusType::SUCCESS;
+                return team_node.val->addNewPlayer(player);
             } else {
                 return StatusType::FAILURE;
             }
@@ -91,6 +91,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 {
 	// TODO: Your code goes here
+
 	return 22;
 }
 

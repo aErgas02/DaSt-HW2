@@ -51,14 +51,15 @@ StatusType Team::addNewPlayer(Player &player) {
     if (m_players.isPlayerExist(player.get_id())) {
         return StatusType::FAILURE;
     }
-    m_players.insert(player.get_id(), player);
+    UFNode<Player> &node = m_players.insert(player.get_id(), player);
+
     increaseTeamSize();
 
     if(player.isGoalKeeper())
         addGoalKeeper();
 
     if(m_representativePlayer == nullptr) {
-
+        m_representativePlayer = &node;
     }
-    return StatusType::ALLOCATION_ERROR;
+    return StatusType::SUCCESS;
 }
