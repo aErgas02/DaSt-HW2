@@ -18,10 +18,10 @@ public:
 
         void expandArray() {
             auto temp = Array<T>(m_currentSize * 2);
-            m_size = temp.getSize();
             copyArray(temp);
+            delete m_array.getPtr();
 
-            // TODO: Do we need to delete m_array here?
+            m_size = temp.getSize();
             m_array = temp;
         }
 
