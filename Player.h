@@ -16,14 +16,17 @@ public:
 
     int get_id() const;
     int get_spirit();
-    int get_numOfGames();
+    int get_numOfGames() const;
     int get_ability();
     int get_numOfCards() const;
     bool isGoalKeeper() const;
+    bool isPlayerActive() const;
 
-    bool updateNumOfCards(int numOfCards);
+    void updateNumOfCards(int numOfCards);
     void updateNumOfGames();
     void changePlayerStatus();
+
+    UnionFind<std::shared_ptr<Player>> &getTeam();
 
 private:
     int m_id;

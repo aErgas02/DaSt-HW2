@@ -24,7 +24,8 @@ public:
     UFNode<std::shared_ptr<Player>>& get_representative() const;
 
     void updateTeamStatus();
-    StatusType addNewPlayer(std::shared_ptr<Player> player);
+    void updateRepresentative(UFNode<std::shared_ptr<Player>> *representativePlayer);
+    StatusType addNewPlayer(std::shared_ptr<Player>& player);
 
 
 private:
@@ -37,8 +38,6 @@ private:
 
     void increaseTeamSize();
     void addGoalKeeper();
-
-    void updateRepresentative(UFNode<std::shared_ptr<Player>> &representativePlayer);
 
     UnionFind<std::shared_ptr<Player>>* m_players;
     UFNode<std::shared_ptr<Player>>* m_representativePlayer;

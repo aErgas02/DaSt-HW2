@@ -14,7 +14,7 @@ class UnionFind {
 
 public:
     void (* blackBox)(T&, T&);
-    UFNode<T>& insert(int key, T obj);
+    UFNode<T>& insert(int key, T& obj);
     void unify(UFNode<T> &setBuyer, UFNode<T> &setBought);
     bool isPlayerExist(int key);
     UFNode<T> *getRoot(UFNode<T> *setA);
@@ -25,7 +25,7 @@ private:
     void compress(UFNode<T> *node, UFNode<T> *root);
 
     UFNode<T> & find_internal(int key);
-    std::unordered_map<int, UFNode<T>> m_hashTable;
+    std::unordered_map<int, std::shared_ptr<UFNode<T>>> m_hashTable;
 };
 
 template<class T>
@@ -45,8 +45,8 @@ void UnionFind<T>::UnionBySize(UFNode<T> &biggerSet, UFNode<T> &smallerSet) {
 
 template<class T>
 UFNode<T>& UnionFind<T>::find_internal(int key) {
-    UFNode<T> set = m_hashTable.find(key)->second;
-    UFNode<T>* root = getRoot(&set);
+    std::shared_ptr<UFNode<T>> set = m_hashTable.find(key)->second;
+    UFNode<T>* root = getRoot(set.get());
 
     return *root;
 }
@@ -72,9 +72,9 @@ void UnionFind<T>::compress(UFNode<T> *node, UFNode<T> *root) {
 }
 
 template<class T>
-UFNode<T>& UnionFind<T>::insert(int key, T obj) {
-    auto *node = new UFNode<T>{obj};
-    std::pair<int, UFNode<T>> pa{key, *node};
+UFNode<T>& UnionFind<T>::insert(int key, T& obj) {
+    auto node = std::make_shared<UFNode<T>>(obj);
+    std::pair<int, std::shared_ptr<UFNode<T>>> pa{key, node};
     m_hashTable.insert(pa);
 
     return *node;

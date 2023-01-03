@@ -99,15 +99,12 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
             if (m_teams->object_exists(team)) {
                 // Add to team
                 auto team_node = *m_teams->find_object(team);
-                auto player = Player(playerId, spirit, gamesPlayed, ability, cards, goalKeeper, m_playersNodes);
-                auto player_node = UFNode<Player>(player);
+                auto player = std::make_shared<Player>(playerId, spirit, gamesPlayed, ability, cards, goalKeeper, m_playersNodes);
 
                 if(m_playersHash.find(playerId) == m_playersHash.end()) {
-                    std::pair<int, UFNode<Player>> pa{playerId, player_node};
-
-                    m_playersHash.insert(pa);
-                    m_playersNodes.insert(playerId, std::make_shared<Player>(player));
-
+                    std::pair<int, std::shared_ptr<Player>> po(playerId, player);
+                    team_node.val->addNewPlayer(player);
+                    m_playersHash.insert(po);
                     return StatusType::SUCCESS;
                 } else {
                     return StatusType::FAILURE;
@@ -156,11 +153,11 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
         if(playerId <= 0) {
             return StatusType::INVALID_INPUT;
         } else {
-            auto res = m_playersNodes.find(playerId);
-            if(res == nullptr) {
+            auto res = m_playersHash.find(playerId);
+            if(res == m_playersHash.end()) {
                 return StatusType::FAILURE;
             }
-            return res->val->get_numOfGames();
+            return res->second->get_numOfGames();
         }
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
@@ -178,9 +175,10 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
         if(res == m_playersHash.end()) {
             return StatusType::FAILURE;
         }
-
-        if(res->second.val.updateNumOfCards(cards))
+        if(res->second->isPlayerActive()) {
+            res->second->updateNumOfCards(cards);
             return StatusType::SUCCESS;
+        }
         return StatusType::FAILURE;
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
@@ -198,8 +196,8 @@ output_t<int> world_cup_t::get_player_cards(int playerId)
             if(res == m_playersHash.end()) {
                 return StatusType::FAILURE;
             }
-            auto player = res->second.val;
-            return res->second.val.get_numOfCards();
+            auto player = res->second;
+            return res->second->get_numOfCards();
         }
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;

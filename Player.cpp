@@ -27,19 +27,26 @@ int Player::get_numOfCards() const {
     return m_numOfCards;
 }
 
-int Player::get_numOfGames() {
-    auto res = m_team->find(get_id());
-    return res->val->m_numOfGames;
+int Player::get_numOfGames() const {
+    return m_numOfGames;
 }
 
 void Player::updateNumOfGames() {
     m_numOfGames++;
 }
 
-bool Player::updateNumOfCards(int numOfCards) {
+void Player::updateNumOfCards(int numOfCards) {
     m_numOfCards += numOfCards;
 }
 
 void Player::changePlayerStatus() {
     m_isActive = false;
+}
+
+UnionFind<std::shared_ptr<Player>> &Player::getTeam() {
+    return *m_team;
+}
+
+bool Player::isPlayerActive() const {
+    return m_isActive;
 }

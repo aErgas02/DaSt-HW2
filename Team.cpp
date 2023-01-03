@@ -41,21 +41,22 @@ void Team::increaseTeamSize() {
     m_teamSize++;
 }
 
-void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> &representativePlayer) {
+void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *representativePlayer) {
     if(m_representativePlayer == nullptr) {
-        m_representativePlayer = &representativePlayer;
+        m_representativePlayer = representativePlayer;
     } else {
-        m_players->unify(*m_representativePlayer, representativePlayer);
+        m_players->unify(*m_representativePlayer, *representativePlayer);
     }
 }
 
-StatusType Team::addNewPlayer(std::shared_ptr<Player> player) {
-    UFNode<std::shared_ptr<Player>> node = m_players->insert(player->get_id(), player);
+StatusType Team::addNewPlayer(std::shared_ptr<Player>& player) {
+    auto& p_node = m_players->insert(player->get_id(), player);
     increaseTeamSize();
     if(player->isGoalKeeper())
         addGoalKeeper();
 
-    updateRepresentative(node);
+    updateRepresentative(&p_node);
+    
     return StatusType::SUCCESS;
 }
 
