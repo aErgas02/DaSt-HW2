@@ -13,17 +13,17 @@ class UnionFind {
 
 public:
     void (* blackBox)(T&, T&);
-    UFNode<T>& insert(int key, T obj);
+    void insert(int key, T obj);
     void unify(UFNode<T> &setBuyer, UFNode<T> &setBought);
     bool isPlayerExist(int key);
-    UFNode<T> & find(int key);
+    UFNode<T> * getRoot(UFNode<T> *setA);
+    UFNode<T> *find(int key);
 
 private:
     void UnionBySize(UFNode<T> &biggerSet, UFNode<T> &smallerSet);
     void compress(UFNode<T> *node, UFNode<T> *root);
 
-    UFNode<T> * getRoot(UFNode<T> *setA);
-
+    UFNode<T> & find_internal(int key);
     std::unordered_map<int, UFNode<T>> m_hashTable;
 };
 
@@ -43,8 +43,8 @@ void UnionFind<T>::UnionBySize(UFNode<T> &biggerSet, UFNode<T> &smallerSet) {
 }
 
 template<class T>
-UFNode<T>& UnionFind<T>::find(int key) {
-    UFNode<T> set = m_hashTable[key];
+UFNode<T>& UnionFind<T>::find_internal(int key) {
+    UFNode<T> set = m_hashTable.find(key)->second;
     UFNode<T>* root = getRoot(&set);
 
     return *root;
@@ -63,7 +63,7 @@ UFNode<T> *UnionFind<T>::getRoot(UFNode<T> *setA) {
 template<class T>
 void UnionFind<T>::compress(UFNode<T> *node, UFNode<T> *root) {
     while(node->parent != root) {
-        blackBox(node, node->parent);
+        blackBox(node->val, node->parent->val);
         UFNode<T>* tmp = node;
         node = node->parent;
         tmp->parent = root;
@@ -71,11 +71,11 @@ void UnionFind<T>::compress(UFNode<T> *node, UFNode<T> *root) {
 }
 
 template<class T>
-UFNode<T>& UnionFind<T>::insert(int key, T obj) {
-    UFNode<T> node{obj};
-    std::pair<int, UFNode<T>> pa{key, node};
+void UnionFind<T>::insert(int key, T obj) {
+    auto *node = new UFNode<T>{obj};
+//    UFNode<T> node{key, obj};
+    std::pair<int, UFNode<T>> pa{key, *node};
     m_hashTable.insert(pa);
-    return node;
 }
 
 template<class T>
@@ -84,6 +84,14 @@ bool UnionFind<T>::isPlayerExist(int key) {
         return false;
     }
     return true;
+}
+
+template<class T>
+UFNode<T> *UnionFind<T>::find(int key) {
+    if(isPlayerExist(key)) {
+        return &find_internal(key);
+    }
+    return nullptr;
 }
 
 

@@ -18,8 +18,10 @@ public:
     bool isValid() const;
     int getScore() const;
     int getSize() const;
+    int getAbility() const;
 
     void updateScore(int byAmount);
+    UFNode<Player> get_representative() const;
 
     StatusType addNewPlayer(Player &player);
 
@@ -30,13 +32,14 @@ private:
     int m_numOfGoalKeepers = 0;
     int m_score = 0;
     int m_teamSize = 0;
+    int m_ability = 0;
 
     void increaseTeamSize();
     void addGoalKeeper();
     void updateRepresentative(UFNode<Player> &representativePlayer);
 
     UnionFind<Player>& m_players;
-    UFNode<Player>* m_representativePlayer = nullptr;
+    UFNode<Player>* m_representativePlayer;
 };
 
 

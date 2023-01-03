@@ -18,7 +18,7 @@ int Team::getSpirit() const {
 }
 
 bool Team::isValid() const {
-    return m_numOfGoalKeepers > 0;
+    return m_numOfGoalKeepers > 0 && m_teamSize > 0;
 }
 
 int Team::getScore() const {
@@ -51,15 +51,25 @@ StatusType Team::addNewPlayer(Player &player) {
     if (m_players.isPlayerExist(player.get_id())) {
         return StatusType::FAILURE;
     }
-    UFNode<Player> &node = m_players.insert(player.get_id(), player);
 
+    m_players.insert(player.get_id(), player);
     increaseTeamSize();
-
     if(player.isGoalKeeper())
         addGoalKeeper();
 
+    auto node = new UFNode<Player>(player);
     if(m_representativePlayer == nullptr) {
-        m_representativePlayer = &node;
+        m_representativePlayer = node;
+    } else {
+        m_players.unify(*m_representativePlayer, *node);
     }
     return StatusType::SUCCESS;
+}
+
+UFNode<Player> Team::get_representative() const {
+    return *m_representativePlayer;
+}
+
+int Team::getAbility() const {
+    return m_ability;
 }

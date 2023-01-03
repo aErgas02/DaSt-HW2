@@ -29,7 +29,7 @@ private:
 
     AVLTree<std::shared_ptr<Team>> *m_teams;
     UnionFind<Player> m_players;
-	
+
 public:
 	// <DO-NOT-MODIFY> {
 	

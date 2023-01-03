@@ -24,5 +24,16 @@ bool Player::isGoalKeeper() const {
 }
 
 int Player::get_numOfCards() const {
-    return m_numOfCards;
+    auto res = m_team.find(get_id());
+    return res->val.m_numOfCards;
+}
+
+int Player::get_numOfGames() {
+    return 2;
+    auto res = m_team.find(get_id());
+    return res->val.m_numOfGames;
+}
+
+void Player::updateNumOfGames() {
+    m_numOfGames++;
 }

@@ -19,6 +19,7 @@ public:
     int get_numOfGames();
     int get_ability();
     int get_numOfCards() const;
+    void updateNumOfGames();
     bool isGoalKeeper() const;
 
 private:
@@ -30,7 +31,7 @@ private:
     bool m_goalKeeper;
     permutation_t m_spirit;
 
-    UnionFind<Player>& m_team;
+    UnionFind<Player> & m_team;
 
 };
 
