@@ -68,6 +68,7 @@ StatusType world_cup_t::remove_team(int teamId)
         } else {
             auto team = std::make_shared<Team>(teamId, m_players);
             if(m_teams->object_exists(team)) {
+                m_teams->find_object(team)->val->updateTeamStatus();
                 m_teams->delete_node(team);
                 return StatusType::SUCCESS;
             } else {
@@ -84,6 +85,8 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
                                    int ability, int cards, bool goalKeeper)
 {
 	// TODO: Your code goes here
+
+    // TODO: Check what happens if team is not active anymore
     try {
         if (playerId <= 0 || teamId <= 0 || !spirit.isvalid() || gamesPlayed < 0 || cards < 0) {
             return StatusType::INVALID_INPUT;
@@ -107,26 +110,29 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 {
 	// TODO: Your code goes here
-    if(teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) {
-        return StatusType::INVALID_INPUT;
-    } else {
-        auto team1 = std::make_shared<Team>(teamId1, m_players);
-        auto team2 = std::make_shared<Team>(teamId2, m_players);
+    try {
+        if(teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) {
+            return StatusType::INVALID_INPUT;
+        } else {
+            auto team1 = std::make_shared<Team>(teamId1, m_players);
+            auto team2 = std::make_shared<Team>(teamId2, m_players);
 
-        if(m_teams->object_exists(team1) && m_teams->object_exists(team2)) {
-            auto team1_node = m_teams->find_object(team1);
-            auto team2_node = m_teams->find_object(team2);
+            if(m_teams->object_exists(team1) && m_teams->object_exists(team2)) {
+                auto team1_node = m_teams->find_object(team1);
+                auto team2_node = m_teams->find_object(team2);
 
-            if(team1_node->val->isValid() == 0 || team2_node->val->isValid() == 0) {
+                if(team1_node->val->isValid() == 0 || team2_node->val->isValid() == 0) {
+                    return StatusType::FAILURE;
+                }
+                return runSimulation(*team1_node, *team2_node);
+            } else {
                 return StatusType::FAILURE;
             }
-
-            return runSimulation(*team1_node, *team2_node);
-        } else {
-            return StatusType::FAILURE;
         }
+        return StatusType::SUCCESS;
+    } catch (std::bad_alloc &e) {
+        return StatusType::ALLOCATION_ERROR;
     }
-	return StatusType::SUCCESS;
 }
 
 output_t<int> world_cup_t::num_played_games_for_player(int playerId)
@@ -150,7 +156,20 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 StatusType world_cup_t::add_player_cards(int playerId, int cards)
 {
 	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    try {
+        if(playerId <= 0 || cards < 0) {
+            return StatusType::INVALID_INPUT;
+        }
+        auto res = m_players.find(playerId);
+        if(res == nullptr) {
+            return StatusType::FAILURE;
+        }
+        if(res->val.updateNumOfCards(cards))
+            return StatusType::SUCCESS;
+        return StatusType::FAILURE;
+    } catch(std::bad_alloc &e) {
+        return StatusType::ALLOCATION_ERROR;
+    }
 }
 
 output_t<int> world_cup_t::get_player_cards(int playerId)
@@ -180,7 +199,6 @@ output_t<int> world_cup_t::get_team_points(int teamId)
         } else {
             auto team = std::make_shared<Team>(teamId, m_players);
             if(m_teams->object_exists(team)) {
-                return 1;
                 return m_teams->find_object(team)->val->getScore();
             } else {
                 return StatusType::FAILURE;

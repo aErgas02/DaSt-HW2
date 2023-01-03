@@ -37,3 +37,15 @@ int Player::get_numOfGames() {
 void Player::updateNumOfGames() {
     m_numOfGames++;
 }
+
+bool Player::updateNumOfCards(int numOfCards) {
+    if(m_team.find(m_id)->val.m_isActive) {
+        m_numOfCards += numOfCards;
+        return true;
+    }
+    return false;
+}
+
+void Player::changePlayerStatus() {
+    m_isActive = false;
+}

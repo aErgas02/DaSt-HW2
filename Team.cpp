@@ -73,3 +73,8 @@ UFNode<Player> Team::get_representative() const {
 int Team::getAbility() const {
     return m_ability;
 }
+
+void Team::updateTeamStatus() {
+    if(m_representativePlayer != nullptr)
+        m_representativePlayer->val.changePlayerStatus();
+}

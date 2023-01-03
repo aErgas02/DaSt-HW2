@@ -19,16 +19,20 @@ public:
     int get_numOfGames();
     int get_ability();
     int get_numOfCards() const;
-    void updateNumOfGames();
     bool isGoalKeeper() const;
+
+    bool updateNumOfCards(int numOfCards);
+    void updateNumOfGames();
+    void changePlayerStatus();
 
 private:
     int m_id;
     int m_numOfGames;
     int m_ability;
     int m_numOfCards;
-    int m_initialTeamGames;
+    int m_initialTeamGames = 0;
     bool m_goalKeeper;
+    bool m_isActive = true;
     permutation_t m_spirit;
 
     UnionFind<Player> & m_team;

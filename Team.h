@@ -23,6 +23,7 @@ public:
     void updateScore(int byAmount);
     UFNode<Player> get_representative() const;
 
+    void updateTeamStatus();
     StatusType addNewPlayer(Player &player);
 
 
@@ -36,6 +37,7 @@ private:
 
     void increaseTeamSize();
     void addGoalKeeper();
+
     void updateRepresentative(UFNode<Player> &representativePlayer);
 
     UnionFind<Player>& m_players;
