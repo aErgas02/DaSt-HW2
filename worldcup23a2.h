@@ -28,7 +28,8 @@ private:
 	//
 
     AVLTree<std::shared_ptr<Team>> *m_teams;
-    UnionFind<Player> m_players;
+    UnionFind<std::shared_ptr<Player>> m_playersNodes;
+    std::unordered_map<int, UFNode<Player>&> m_playersHash;
 
 public:
 	// <DO-NOT-MODIFY> {

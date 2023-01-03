@@ -8,15 +8,16 @@
 #include "UFNode.h"
 #include <unordered_map>
 #include <utility>
+
 template <class T>
 class UnionFind {
 
 public:
     void (* blackBox)(T&, T&);
-    void insert(int key, T obj);
+    UFNode<T>& insert(int key, T obj);
     void unify(UFNode<T> &setBuyer, UFNode<T> &setBought);
     bool isPlayerExist(int key);
-    UFNode<T> * getRoot(UFNode<T> *setA);
+    UFNode<T> *getRoot(UFNode<T> *setA);
     UFNode<T> *find(int key);
 
 private:
@@ -71,11 +72,12 @@ void UnionFind<T>::compress(UFNode<T> *node, UFNode<T> *root) {
 }
 
 template<class T>
-void UnionFind<T>::insert(int key, T obj) {
+UFNode<T>& UnionFind<T>::insert(int key, T obj) {
     auto *node = new UFNode<T>{obj};
-//    UFNode<T> node{key, obj};
     std::pair<int, UFNode<T>> pa{key, *node};
     m_hashTable.insert(pa);
+
+    return *node;
 }
 
 template<class T>

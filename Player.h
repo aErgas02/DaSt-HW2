@@ -12,7 +12,7 @@ class Player {
 
 public:
     Player(int id, const permutation_t& spirit, int numOfGames, int ability,
-           int numOfCards, bool goalKeeper, UnionFind<Player>& team);
+           int numOfCards, bool goalKeeper, UnionFind<std::shared_ptr<Player>> &team);
 
     int get_id() const;
     int get_spirit();
@@ -35,8 +35,7 @@ private:
     bool m_isActive = true;
     permutation_t m_spirit;
 
-    UnionFind<Player> & m_team;
-
+    UnionFind<std::shared_ptr<Player>> *m_team;
 };
 
 

@@ -11,7 +11,7 @@
 class Team {
 
 public:
-    Team(int teamId, UnionFind<Player>& players);
+    Team(int teamId, UnionFind<std::shared_ptr<Player>>& players);
 
     int getId() const;
     int getSpirit() const;
@@ -21,10 +21,10 @@ public:
     int getAbility() const;
 
     void updateScore(int byAmount);
-    UFNode<Player> get_representative() const;
+    UFNode<std::shared_ptr<Player>>& get_representative() const;
 
     void updateTeamStatus();
-    StatusType addNewPlayer(Player &player);
+    StatusType addNewPlayer(std::shared_ptr<Player> player);
 
 
 private:
@@ -38,10 +38,10 @@ private:
     void increaseTeamSize();
     void addGoalKeeper();
 
-    void updateRepresentative(UFNode<Player> &representativePlayer);
+    void updateRepresentative(UFNode<std::shared_ptr<Player>> &representativePlayer);
 
-    UnionFind<Player>& m_players;
-    UFNode<Player>* m_representativePlayer;
+    UnionFind<std::shared_ptr<Player>>* m_players;
+    UFNode<std::shared_ptr<Player>>* m_representativePlayer;
 };
 
 
