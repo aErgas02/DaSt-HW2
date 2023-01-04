@@ -55,10 +55,10 @@ UFNode<T>& UnionFind<T>::find_internal(int key) {
 template<class T>
 UFNode<T> *UnionFind<T>::getRoot(UFNode<T> *setA) {
     UFNode<T>* root = setA;
-    while(root != setA->parent) {
-        root = setA->parent;
+    while(root != root->parent) {
+        root = root->parent;
     }
-    compress(setA, root);
+//    compress(setA, root);
     return root;
 }
 

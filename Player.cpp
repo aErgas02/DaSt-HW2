@@ -32,7 +32,7 @@ int Player::get_numOfGames() const {
 }
 
 void Player::updateNumOfGames(int by) {
-    m_numOfGames++;
+    m_numOfGames += by;
 }
 
 void Player::updateNumOfCards(int numOfCards) {

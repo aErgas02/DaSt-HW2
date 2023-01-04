@@ -153,11 +153,16 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
         if(playerId <= 0) {
             return StatusType::INVALID_INPUT;
         } else {
-            auto res = m_playersNodes.find(playerId);
-            if(res == nullptr) {
+            auto res_parent = m_playersNodes.find(playerId);
+            auto res_player = m_playersHash.find(playerId);
+            if(res_parent == nullptr) {
                 return StatusType::FAILURE;
             }
-            return res->val->get_numOfGames();
+
+            if(res_player->second->get_id() == res_parent->val->get_id())
+                return res_parent->val->get_numOfGames();
+            auto po = res_player->second;
+            return res_parent->val->get_numOfGames() + res_player->second->get_numOfGames();
         }
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
