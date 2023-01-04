@@ -15,13 +15,13 @@ class UnionFind {
 public:
     void (* blackBox)(UFNode<T>&, UFNode<T>&);
     UFNode<T>& insert(int key, T& obj);
-    void unify(UFNode<T> &setBuyer, UFNode<T> &setBought);
+    void unify(UFNode<T> *setBuyer, UFNode<T> *setBought);
     bool isObjectExist(int key);
     UFNode<T> *getRoot(UFNode<T> *setA);
     UFNode<T> *find(int key);
 
 private:
-    void UnionBySize(UFNode<T> &biggerSet, UFNode<T> &smallerSet);
+    void unionBySize(UFNode<T> *biggerSet, UFNode<T> *smallerSet);
     void compress(UFNode<T> *node, UFNode<T> *root);
 
     UFNode<T> & find_internal(int key);
@@ -29,19 +29,21 @@ private:
 };
 
 template<class T>
-void UnionFind<T>::unify(UFNode<T> &setBuyer, UFNode<T> &setBought) {
-    if(setBuyer.height >= setBought.height) {
-        UnionBySize(setBuyer, setBought);
+void UnionFind<T>::unify(UFNode<T> *setBuyer, UFNode<T> *setBought) {
+    if(setBought == nullptr) {
+        return;
+    } else if(setBuyer->height >= setBought->height) {
+        unionBySize(setBuyer, setBought);
     } else {
-        UnionBySize(setBought, setBuyer);
-        setBought.parent = &setBuyer;
+        unionBySize(setBought, setBuyer);
+        setBought->parent = setBuyer;
     }
 }
 
 template<class T>
-void UnionFind<T>::UnionBySize(UFNode<T> &biggerSet, UFNode<T> &smallerSet) {
-    smallerSet.parent = &biggerSet;
-    biggerSet.height++;
+void UnionFind<T>::unionBySize(UFNode<T> *biggerSet, UFNode<T> *smallerSet) {
+    smallerSet->parent = biggerSet;
+    biggerSet->height++;
 }
 
 template<class T>

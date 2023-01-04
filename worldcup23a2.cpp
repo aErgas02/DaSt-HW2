@@ -260,9 +260,20 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
     if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) {
         return StatusType::INVALID_INPUT;
     }
-
     try {
-        return StatusType::SUCCESS;
+        auto team1 = std::make_shared<Team>(teamId1, m_playersNodes);
+        auto team2 = std::make_shared<Team>(teamId2, m_playersNodes);
+
+        if(m_teams->object_exists(team1) && m_teams->object_exists(team2)) {
+            auto team1_node = m_teams->find_object(team1);
+            auto team2_node = m_teams->find_object(team2);
+
+
+//            m_playersNodes.unify(team1_node->val->get_representative(), team2_rep);
+            m_teams->delete_node(team2);
+            return StatusType::SUCCESS;
+        }
+        return StatusType::FAILURE;
     } catch (std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
