@@ -31,7 +31,7 @@ int Player::get_numOfGames() const {
     return m_numOfGames;
 }
 
-void Player::updateNumOfGames() {
+void Player::updateNumOfGames(int by) {
     m_numOfGames++;
 }
 
@@ -57,4 +57,8 @@ const permutation_t &Player::get_spirit() {
 
 void Player::updateSpirit(permutation_t const teamSpirit) {
     m_spirit = teamSpirit * m_spirit;
+}
+
+int Player::get_ability() const {
+    return m_ability;
 }

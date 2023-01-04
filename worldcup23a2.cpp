@@ -5,8 +5,8 @@ int compT_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b) {
 }
 
 int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_ptr<Team>> &team2) {
-    team1.val->get_representative().val->updateNumOfGames();
-    team2.val->get_representative().val->updateNumOfGames();
+    team1.val->get_representative().val->updateNumOfGames(1);
+    team2.val->get_representative().val->updateNumOfGames(1);
 
     if(team1.val->getAbility() > team2.val->getAbility()) {
         team1.val->updateScore(3);
@@ -14,10 +14,10 @@ int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_p
     } else if(team1.val->getAbility() < team2.val->getAbility()) {
         team2.val->updateScore(3);
         return 3;
-    } else if (team1.val->getSpirit() > team2.val->getSpirit()) {
+    } else if (team1.val->getSpirit().strength() > team2.val->getSpirit().strength()) {
         team1.val->updateScore(3);
         return 2;
-    }else if (team1.val->getSpirit() < team2.val->getSpirit()) {
+    }else if (team1.val->getSpirit().strength() < team2.val->getSpirit().strength()) {
         team2.val->updateScore(3);
         return 4;
     } else {
@@ -153,11 +153,11 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
         if(playerId <= 0) {
             return StatusType::INVALID_INPUT;
         } else {
-            auto res = m_playersHash.find(playerId);
-            if(res == m_playersHash.end()) {
+            auto res = m_playersNodes.find(playerId);
+            if(res == nullptr) {
                 return StatusType::FAILURE;
             }
-            return res->second->get_numOfGames();
+            return res->val->get_numOfGames();
         }
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
@@ -240,7 +240,6 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
         if(res == m_playersHash.end()) {
             return StatusType::FAILURE;
         }
-        auto p = res->second;
         if(res->second->isPlayerActive())
             return res->second->get_spirit();
         return StatusType::FAILURE;

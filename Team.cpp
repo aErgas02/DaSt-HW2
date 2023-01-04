@@ -13,7 +13,7 @@ int Team::getId() const {
     return m_id;
 }
 
-int Team::getSpirit() const {
+permutation_t Team::getSpirit() {
     return m_teamSpirit;
 }
 
@@ -34,6 +34,7 @@ void Team::addGoalKeeper() {
 }
 
 void Team::updateScore(int byAmount) {
+    updateTeamAbility(byAmount);
     m_score += byAmount;
 }
 
@@ -48,6 +49,7 @@ void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *representativeP
     } else {
         m_players->unify(*m_lastNode, *representativePlayer);
         representativePlayer->val->updateSpirit(representativePlayer->parent->val->get_spirit());
+
         m_lastNode = representativePlayer;
     }
 }
@@ -59,7 +61,11 @@ StatusType Team::addNewPlayer(std::shared_ptr<Player>& player) {
         addGoalKeeper();
 
     updateRepresentative(&p_node);
-    
+    updateTeamAbility(player->get_ability());
+    updateTeamSpirit(player->get_spirit());
+
+    // updatePlayerNumGames(player);
+
     return StatusType::SUCCESS;
 }
 
@@ -77,10 +83,18 @@ void Team::updateTeamStatus() {
     }
 }
 
-void Team::updateTeamSpirit(int spirit) {
-    m_teamSpirit *= spirit;
+void Team::updateTeamSpirit(permutation_t spirit) {
+    m_teamSpirit = spirit;
 }
 
 UFNode<std::shared_ptr<Player>> &Team::getLastNode() {
     return *m_lastNode;
+}
+
+void Team::updateTeamAbility(int ability) {
+    m_ability += ability;
+}
+
+void Team::updatePlayerNumGames(std::shared_ptr<Player>& player) {
+    player->updateNumOfGames(-m_representativePlayer->val->get_numOfGames());
 }

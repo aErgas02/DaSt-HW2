@@ -14,7 +14,7 @@ public:
     Team(int teamId, UnionFind<std::shared_ptr<Player>>& players);
 
     int getId() const;
-    int getSpirit() const;
+    permutation_t getSpirit();
     bool isValid() const;
     int getScore() const;
     int getSize() const;
@@ -25,13 +25,15 @@ public:
     UFNode<std::shared_ptr<Player>>& getLastNode();
 
     void updateTeamStatus();
-    void updateTeamSpirit(int teamSpirit);
+    void updateTeamSpirit(permutation_t spirit);
+    void updateTeamAbility(int ability);
+    void updatePlayerNumGames(std::shared_ptr<Player>& player);
     void updateRepresentative(UFNode<std::shared_ptr<Player>> *representativePlayer);
     StatusType addNewPlayer(std::shared_ptr<Player>& player);
 
 private:
     int m_id;
-    int m_teamSpirit = 0;
+    permutation_t m_teamSpirit;
     int m_numOfGoalKeepers = 0;
     int m_score = 0;
     int m_teamSize = 0;

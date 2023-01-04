@@ -17,15 +17,15 @@ public:
     int get_id() const;
     const permutation_t& get_spirit();
     int get_numOfGames() const;
-    int get_ability();
+    int get_ability() const;
     int get_numOfCards() const;
     bool isGoalKeeper() const;
     bool isPlayerActive() const;
 
     void updateNumOfCards(int numOfCards);
-    void updateNumOfGames();
+    void updateNumOfGames(int by);
     void changePlayerStatus();
-    void updateSpirit(permutation_t const teamSpirit);
+    void updateSpirit(permutation_t teamSpirit);
 
     UnionFind<std::shared_ptr<Player>> &getTeam();
 
