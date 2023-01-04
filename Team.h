@@ -22,11 +22,12 @@ public:
 
     void updateScore(int byAmount);
     UFNode<std::shared_ptr<Player>>& get_representative() const;
+    UFNode<std::shared_ptr<Player>>& getLastNode();
 
     void updateTeamStatus();
+    void updateTeamSpirit(int teamSpirit);
     void updateRepresentative(UFNode<std::shared_ptr<Player>> *representativePlayer);
     StatusType addNewPlayer(std::shared_ptr<Player>& player);
-
 
 private:
     int m_id;
@@ -41,6 +42,7 @@ private:
 
     UnionFind<std::shared_ptr<Player>>* m_players;
     UFNode<std::shared_ptr<Player>>* m_representativePlayer;
+    UFNode<std::shared_ptr<Player>>* m_lastNode;
 };
 
 

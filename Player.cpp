@@ -50,3 +50,11 @@ UnionFind<std::shared_ptr<Player>> &Player::getTeam() {
 bool Player::isPlayerActive() const {
     return m_isActive;
 }
+
+const permutation_t &Player::get_spirit() {
+    return m_spirit;
+}
+
+void Player::updateSpirit(permutation_t const teamSpirit) {
+    m_spirit = teamSpirit * m_spirit;
+}

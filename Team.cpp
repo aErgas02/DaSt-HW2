@@ -44,8 +44,11 @@ void Team::increaseTeamSize() {
 void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *representativePlayer) {
     if(m_representativePlayer == nullptr) {
         m_representativePlayer = representativePlayer;
+        m_lastNode = m_representativePlayer;
     } else {
-        m_players->unify(*m_representativePlayer, *representativePlayer);
+        m_players->unify(*m_lastNode, *representativePlayer);
+        representativePlayer->val->updateSpirit(representativePlayer->parent->val->get_spirit());
+        m_lastNode = representativePlayer;
     }
 }
 
@@ -72,4 +75,12 @@ void Team::updateTeamStatus() {
     if(m_representativePlayer != nullptr) {
         m_representativePlayer->val->changePlayerStatus();
     }
+}
+
+void Team::updateTeamSpirit(int spirit) {
+    m_teamSpirit *= spirit;
+}
+
+UFNode<std::shared_ptr<Player>> &Team::getLastNode() {
+    return *m_lastNode;
 }

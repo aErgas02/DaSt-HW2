@@ -41,6 +41,7 @@ void UnionFind<T>::unify(UFNode<T> &setBuyer, UFNode<T> &setBought) {
 template<class T>
 void UnionFind<T>::UnionBySize(UFNode<T> &biggerSet, UFNode<T> &smallerSet) {
     smallerSet.parent = &biggerSet;
+    biggerSet.height++;
 }
 
 template<class T>

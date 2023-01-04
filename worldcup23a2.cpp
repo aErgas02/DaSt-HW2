@@ -232,7 +232,21 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
 	// TODO: Your code goes here
-	return permutation_t();
+    try{
+        if(playerId <= 0) {
+            return StatusType::INVALID_INPUT;
+        }
+        auto res = m_playersHash.find(playerId);
+        if(res == m_playersHash.end()) {
+            return StatusType::FAILURE;
+        }
+        auto p = res->second;
+        if(res->second->isPlayerActive())
+            return res->second->get_spirit();
+        return StatusType::FAILURE;
+    } catch(std::bad_alloc &e) {
+        return StatusType::ALLOCATION_ERROR;
+    }
 }
 
 StatusType world_cup_t::buy_team(int teamId1, int teamId2)

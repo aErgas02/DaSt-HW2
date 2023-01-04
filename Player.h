@@ -15,7 +15,7 @@ public:
            int numOfCards, bool goalKeeper, UnionFind<std::shared_ptr<Player>> &team);
 
     int get_id() const;
-    int get_spirit();
+    const permutation_t& get_spirit();
     int get_numOfGames() const;
     int get_ability();
     int get_numOfCards() const;
@@ -25,6 +25,7 @@ public:
     void updateNumOfCards(int numOfCards);
     void updateNumOfGames();
     void changePlayerStatus();
+    void updateSpirit(permutation_t const teamSpirit);
 
     UnionFind<std::shared_ptr<Player>> &getTeam();
 
