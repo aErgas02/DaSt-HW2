@@ -99,7 +99,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
             if (m_teams->object_exists(team)) {
                 // Add to team
                 auto team_node = *m_teams->find_object(team);
-                auto player = std::make_shared<Player>(playerId, spirit, gamesPlayed, ability, cards, goalKeeper, m_playersNodes);
+                auto player = std::make_shared<Player>(playerId, spirit, gamesPlayed, ability, cards, goalKeeper);
 
                 if(m_playersHash.find(playerId) == m_playersHash.end()) {
                     std::pair<int, std::shared_ptr<Player>> po(playerId, player);

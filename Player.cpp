@@ -5,14 +5,13 @@
 #include "Player.h"
 
 Player::Player(int id, const permutation_t& spirit, int numOfGames, int ability,
-               int numOfCards, bool goalKeeper, UnionFind<std::shared_ptr<Player>> &team) :
+               int numOfCards, bool goalKeeper) :
     m_id(id),
     m_spirit(spirit),
     m_numOfGames(numOfGames),
     m_ability(ability),
     m_numOfCards(numOfCards),
-    m_goalKeeper(goalKeeper),
-    m_team(&team)
+    m_goalKeeper(goalKeeper)
 {}
 
 int Player::get_id() const {
@@ -43,8 +42,12 @@ void Player::changePlayerStatus() {
     m_isActive = false;
 }
 
-UnionFind<std::shared_ptr<Player>> &Player::getTeam() {
-    return *m_team;
+UFNode<std::shared_ptr<Player>> &Player::getRepresentative() {
+    return *m_representative;
+}
+
+void Player::updateRepresentative(UFNode<std::shared_ptr<Player>> &new_representative) {
+    m_representative = &new_representative;
 }
 
 bool Player::isPlayerActive() const {
@@ -55,7 +58,7 @@ const permutation_t &Player::get_spirit() {
     return m_spirit;
 }
 
-void Player::updateSpirit(permutation_t const teamSpirit) {
+void Player::updateSpirit(permutation_t const& teamSpirit) {
     m_spirit = teamSpirit * m_spirit;
 }
 

@@ -50,9 +50,9 @@ void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *representativeP
         m_players->unify(*m_lastNode, *representativePlayer);
         representativePlayer->val->updateSpirit(representativePlayer->parent->val->get_spirit());
         updatePlayerNumGames(representativePlayer->val);
-
         m_lastNode = representativePlayer;
     }
+    representativePlayer->val->updateRepresentative(*m_representativePlayer);
 }
 
 StatusType Team::addNewPlayer(std::shared_ptr<Player>& player) {

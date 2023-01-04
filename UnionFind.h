@@ -13,10 +13,10 @@ template <class T>
 class UnionFind {
 
 public:
-    void (* blackBox)(T&, T&);
+    void (* blackBox)(UFNode<T>&, UFNode<T>&);
     UFNode<T>& insert(int key, T& obj);
     void unify(UFNode<T> &setBuyer, UFNode<T> &setBought);
-    bool isPlayerExist(int key);
+    bool isObjectExist(int key);
     UFNode<T> *getRoot(UFNode<T> *setA);
     UFNode<T> *find(int key);
 
@@ -46,9 +46,9 @@ void UnionFind<T>::UnionBySize(UFNode<T> &biggerSet, UFNode<T> &smallerSet) {
 
 template<class T>
 UFNode<T>& UnionFind<T>::find_internal(int key) {
-    std::shared_ptr<UFNode<T>> set = m_hashTable.find(key)->second;
-    UFNode<T>* root = getRoot(set.get());
-//    compress(set, root);
+    UFNode<T>* set = m_hashTable.find(key)->second.get();
+    UFNode<T>* root = getRoot(set);
+    compress(set, root);
     return *root;
 }
 
@@ -65,6 +65,7 @@ template<class T>
 void UnionFind<T>::compress(UFNode<T> *node, UFNode<T> *root) {
     if(node->parent == root) return;
     compress(node->parent, root);
+    blackBox(*node, *root);
     node->parent = root;
 }
 
@@ -78,7 +79,7 @@ UFNode<T>& UnionFind<T>::insert(int key, T& obj) {
 }
 
 template<class T>
-bool UnionFind<T>::isPlayerExist(int key) {
+bool UnionFind<T>::isObjectExist(int key) {
     if(m_hashTable.find(key) == m_hashTable.end()) {
         return false;
     }
@@ -87,7 +88,7 @@ bool UnionFind<T>::isPlayerExist(int key) {
 
 template<class T>
 UFNode<T> *UnionFind<T>::find(int key) {
-    if(isPlayerExist(key)) {
+    if(isObjectExist(key)) {
         return &find_internal(key);
     }
     return nullptr;

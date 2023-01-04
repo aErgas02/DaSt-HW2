@@ -12,7 +12,7 @@ class Player {
 
 public:
     Player(int id, const permutation_t& spirit, int numOfGames, int ability,
-           int numOfCards, bool goalKeeper, UnionFind<std::shared_ptr<Player>> &team);
+           int numOfCards, bool goalKeeper);
 
     int get_id() const;
     const permutation_t& get_spirit();
@@ -25,9 +25,10 @@ public:
     void updateNumOfCards(int numOfCards);
     void updateNumOfGames(int by);
     void changePlayerStatus();
-    void updateSpirit(permutation_t teamSpirit);
+    void updateSpirit(permutation_t const& teamSpirit);
 
-    UnionFind<std::shared_ptr<Player>> &getTeam();
+    UFNode<std::shared_ptr<Player>> &getRepresentative();
+    void updateRepresentative(UFNode<std::shared_ptr<Player>> &new_representative);
 
 private:
     int m_id;
@@ -38,7 +39,7 @@ private:
     bool m_isActive = true;
     permutation_t m_spirit;
 
-    UnionFind<std::shared_ptr<Player>> *m_team;
+    UFNode<std::shared_ptr<Player>> *m_representative = nullptr;
 };
 
 
