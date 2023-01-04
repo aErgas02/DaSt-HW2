@@ -34,7 +34,6 @@ private:
     int m_numOfGames;
     int m_ability;
     int m_numOfCards;
-    int m_initialTeamGames = 0;
     bool m_goalKeeper;
     bool m_isActive = true;
     permutation_t m_spirit;

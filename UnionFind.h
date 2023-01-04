@@ -48,7 +48,7 @@ template<class T>
 UFNode<T>& UnionFind<T>::find_internal(int key) {
     std::shared_ptr<UFNode<T>> set = m_hashTable.find(key)->second;
     UFNode<T>* root = getRoot(set.get());
-
+//    compress(set, root);
     return *root;
 }
 
@@ -58,18 +58,14 @@ UFNode<T> *UnionFind<T>::getRoot(UFNode<T> *setA) {
     while(root != root->parent) {
         root = root->parent;
     }
-//    compress(setA, root);
     return root;
 }
 
 template<class T>
 void UnionFind<T>::compress(UFNode<T> *node, UFNode<T> *root) {
-    while(node->parent != root) {
-        blackBox(node->val, node->parent->val);
-        UFNode<T>* tmp = node;
-        node = node->parent;
-        tmp->parent = root;
-    }
+    if(node->parent == root) return;
+    compress(node->parent, root);
+    node->parent = root;
 }
 
 template<class T>
