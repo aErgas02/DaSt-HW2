@@ -18,9 +18,6 @@ public:
             val(val),
             parent(this)
     {}
-
-    void updateSheker() {
-    }
 };
 
 #endif //WET2_UFNODE_H

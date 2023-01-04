@@ -48,7 +48,7 @@ template<class T>
 UFNode<T>& UnionFind<T>::find_internal(int key) {
     UFNode<T>* set = m_hashTable.find(key)->second.get();
     UFNode<T>* root = getRoot(set);
-    compress(set, root);
+//    compress(set, root);
     return *root;
 }
 
