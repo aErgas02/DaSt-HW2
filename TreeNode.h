@@ -20,10 +20,6 @@ public:
     explicit TreeNode(T val, TreeNode *parent) : val(val), parent(parent)
     {}
 
-    bool is_right_child();
-
-    ~TreeNode()= default;
-
     TreeNode *get_biggest_child() {
         TreeNode* node = this;
         while (node->right != nullptr)
@@ -38,14 +34,6 @@ public:
         return node;
     }
 };
-
-template<class T>
-bool TreeNode<T>::is_right_child() {
-    if (parent != nullptr) {
-        return parent->right == this;
-    }
-    return false;
-}
 
 template<class T>
 int get_height(TreeNode<T> *node) {

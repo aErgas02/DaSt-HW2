@@ -251,6 +251,8 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
         auto node = m_teamsAbility->select(i);
         if(node == nullptr){
             //shouldn't get here but for debugging purposes :)
+            // TODO: Change
+            return StatusType::FAILURE;
         }
         else{
             return node->val->getId();

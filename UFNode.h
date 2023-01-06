@@ -1,7 +1,3 @@
-//
-// Created by Meitar Basson on 02/01/2023.
-//
-
 #ifndef WET2_UFNODE_H
 #define WET2_UFNODE_H
 

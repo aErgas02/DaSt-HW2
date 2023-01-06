@@ -244,7 +244,9 @@ TreeNode<T> *AVLTree<T>::select_internal(int k, TreeNode<T> *proot){
     else if(l > k-1){
         return select_internal(k, proot->left);
     }
-    else if(l < k-1){
+
+    //TODO: Changed here
+    else {
         return select_internal(k - l - 1, proot->right);
     }
 }
