@@ -43,9 +43,9 @@ private:
     void increaseTeamSize();
     void addGoalKeeper();
 
-    UnionFind<std::shared_ptr<Player>>* m_players;
-    UFNode<std::shared_ptr<Player>>* m_representativePlayer;
-    UFNode<std::shared_ptr<Player>>* m_lastNode;
+    UnionFind<std::shared_ptr<Player>>* m_players = nullptr;
+    UFNode<std::shared_ptr<Player>>* m_representativePlayer = nullptr;
+    UFNode<std::shared_ptr<Player>>* m_lastNode = nullptr;
 };
 
 

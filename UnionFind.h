@@ -8,6 +8,7 @@
 #include "UFNode.h"
 #include <unordered_map>
 #include <utility>
+#include <memory>
 
 template <class T>
 class UnionFind {
@@ -30,7 +31,7 @@ private:
 
 template<class T>
 void UnionFind<T>::unify(UFNode<T> *setBuyer, UFNode<T> *setBought) {
-    if(setBought == nullptr) {
+    if(setBought == nullptr || setBuyer == nullptr) {
         return;
     } else if(setBuyer->height >= setBought->height) {
         unionBySize(setBuyer, setBought);

@@ -4,12 +4,12 @@
 template <class T>
 struct UFNode {
 public:
-    T val;
 
-    UFNode() = default;
+    T val;
     UFNode<T> *parent;
     int height = 0;
 
+    UFNode() = default;
     explicit UFNode(const T& val) :
             val(val),
             parent(this)
