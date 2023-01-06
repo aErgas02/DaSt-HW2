@@ -12,6 +12,7 @@ public:
 
     int height = 0; // Added as leaf.
     int bf = 0;
+    int w = 0;
 
     explicit TreeNode(T val) : val(val)
     {}
@@ -66,6 +67,17 @@ void update_balance_factor(TreeNode<T> *node) {
 }
 
 template<class T>
+int get_w(TreeNode<T> * node){
+    return (node == nullptr) ? -1 : node->w;
+}
+
+template<class T>
+void update_w(TreeNode<T> *node){
+    if(node == nullptr) return;
+    node->w = get_w(node->right) + get_w(node->left) + 2;
+}
+
+template<class T>
 TreeNode<T> *perform_rotation(TreeNode<T> *node) {
     if (node->bf == 2) {
         return node->left->bf > -1 ? LL(node) : LR(node);
@@ -97,8 +109,10 @@ TreeNode<T> *LL(TreeNode<T> *node) {
 
     update_height(old_root);
     update_balance_factor(old_root);
+    update_w(old_root);
     update_height(new_root);
     update_balance_factor(new_root);
+    update_w(new_root);
 
     return new_root;
 }
@@ -124,8 +138,10 @@ TreeNode<T> *RR(TreeNode<T> *node) {
 
     update_height(old_root);
     update_balance_factor(old_root);
+    update_w(old_root);
     update_height(new_root);
     update_balance_factor(new_root);
+    update_w(new_root);
 
     return new_root;
 }

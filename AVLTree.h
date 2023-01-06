@@ -26,6 +26,7 @@ protected:
     void recursive_delete(TreeNode<T> *d_node);
     void update_max();
     int in_order_internal(TreeNode<T> *pRoot, T *arr, int n, int index = 0);
+    TreeNode<T> *select_internal(int k, TreeNode<T> *proot);
 
 public:
     const TreeNode<T> *get_root() const {
@@ -34,14 +35,14 @@ public:
     TreeNode<T> *delete_node(T obj);
     TreeNode<T> *insert(T obj);
     TreeNode<T> *find_object(T obj);
+    TreeNode<T> *select(int k);
     bool object_exists(T obj);
-    void update_tree_external(TreeNode<T> *pRoot);
 
+    void update_tree_external(TreeNode<T> *pRoot);
     explicit AVLTree(int (*compare)(T *, T *)) : compare(compare) {}
     ~AVLTree() {
         recursive_delete(this->root);
     }
-
 };
 
 
@@ -167,11 +168,13 @@ TreeNode<T> *AVLTree<T>::update_tree(TreeNode<T> *node) {
         // Go up through the tree until we reach the root and update each node
         update_height(node);
         update_balance_factor(node);
+        update_w(node);
         auto res = perform_rotation(node);
         update_height(node->left);
         update_height(node->right);
         update_height(node);
         update_balance_factor(node);
+        update_w(node);
         return res;
     }
     return nullptr;
@@ -221,5 +224,29 @@ int AVLTree<T>::in_order_internal(TreeNode<T> *pRoot, T *arr, int n, int index) 
 
     return in_order_internal(pRoot->right, arr, n, index);
 }
+
+template<class T>
+TreeNode<T> *AVLTree<T>::select(int k){
+    if(k < 0 || k >= this->tree_size || this->tree_size == 0) return nullptr;
+    return select_internal(k, this->root);
+}
+
+template<class T>
+TreeNode<T> *AVLTree<T>::select_internal(int k, TreeNode<T> *proot){
+    if(proot == nullptr) return nullptr;
+
+    int l = 0; //l = num of nodes in the left subtree.
+    if(proot->left != nullptr) {l = proot->left->w;}
+
+    if(l == k-1) return proot; //exactly found the k-th node
+
+    else if(l > k-1){
+        return select_internal(k, proot->left);
+    }
+    else if(l < k-1){
+        return select_internal(k - l - 1, proot->right);
+    }
+}
+
 
 #endif //MAIN23A1_CPP_AVLTREE_H
