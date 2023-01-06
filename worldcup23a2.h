@@ -20,6 +20,7 @@
 #include "UnionFind.h"
 #include "Team.h"
 #include "Player.h"
+#include <memory>
 
 class world_cup_t {
 private:
@@ -37,7 +38,7 @@ public:
 	
 	world_cup_t();
 	virtual ~world_cup_t();
-	
+//
 	StatusType add_team(int teamId);
 	
 	StatusType remove_team(int teamId);

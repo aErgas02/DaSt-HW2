@@ -18,8 +18,8 @@ int comp_ability_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b){
 }
 
 int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_ptr<Team>> &team2) {
-    team1.val->get_representative().val->updateNumOfGames(1);
-    team2.val->get_representative().val->updateNumOfGames(1);
+    team1.val->get_representative()->val->updateNumOfGames(1);
+    team2.val->get_representative()->val->updateNumOfGames(1);
 
     if(team1.val->getAbility() > team2.val->getAbility()) {
         team1.val->updateScore(3);
@@ -87,7 +87,7 @@ StatusType world_cup_t::remove_team(int teamId)
         if(m_teams->object_exists(team)) {
             if(m_teams->find_object(team)->val->getSize() > 0) {
                 auto representative = m_teams->find_object(team)->val->get_representative();
-                representative.val->changePlayerStatus();
+                representative->val->changePlayerStatus();
             }
             m_teams->delete_node(team);
             m_teamsAbility->delete_node(team);
@@ -134,7 +134,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
         return StatusType::ALLOCATION_ERROR;
     }
 }
-
+//
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 {
 	// TODO: Your code goes here
@@ -297,11 +297,10 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
         auto team2 = std::make_shared<Team>(teamId2, m_playersNodes);
 
         if(m_teams->object_exists(team1) && m_teams->object_exists(team2)) {
-            auto team1_node = m_teams->find_object(team1);
-            auto team2_node = m_teams->find_object(team2);
+            auto team1_rep = m_teams->find_object(team1)->val->get_representative();
+            auto team2_rep = m_teams->find_object(team2)->val->get_representative();
 
-
-//            m_playersNodes.unify(team1_node->val->get_representative(), team2_rep);
+//            m_playersNodes.unify(team1_rep, team2_rep);
             m_teams->delete_node(team2);
             return StatusType::SUCCESS;
         }

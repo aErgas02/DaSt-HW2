@@ -22,7 +22,7 @@ public:
     int getAbility() const;
 
     void updateScore(int byAmount);
-    UFNode<std::shared_ptr<Player>>& get_representative() const;
+    UFNode<std::shared_ptr<Player>>* get_representative() const;
     UFNode<std::shared_ptr<Player>>& getLastNode();
 
     void updateTeamStatus();

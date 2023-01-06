@@ -47,7 +47,7 @@ void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *representativeP
         m_representativePlayer = representativePlayer;
         m_lastNode = m_representativePlayer;
     } else {
-        m_players->unify(m_lastNode, representativePlayer);
+        m_players->unify(m_representativePlayer, representativePlayer);
         representativePlayer->val->updateSpirit(representativePlayer->parent->val->get_spirit());
         updatePlayerNumGames(representativePlayer->val);
         m_lastNode = representativePlayer;
@@ -68,8 +68,8 @@ StatusType Team::addNewPlayer(std::shared_ptr<Player>& player) {
     return StatusType::SUCCESS;
 }
 
-UFNode<std::shared_ptr<Player>>& Team::get_representative() const {
-    return *m_representativePlayer;
+UFNode<std::shared_ptr<Player>>* Team::get_representative() const {
+    return m_representativePlayer;
 }
 
 int Team::getAbility() const {

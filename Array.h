@@ -8,13 +8,12 @@
 template <typename T>
 class Array {
 public:
-
     explicit Array(int size) :
         m_size(size),
         m_ptr{new T[size]} {}
 
         ~Array() {
-//        delete[] m_ptr;
+        delete[] m_ptr;
     }
 
     T *get() {
