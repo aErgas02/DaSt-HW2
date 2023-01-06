@@ -7,6 +7,7 @@
 
 #include "UnionFind.h"
 #include "Player.h"
+#include <memory>
 
 class Team {
 

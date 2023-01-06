@@ -1,7 +1,20 @@
 #include "worldcup23a2.h"
 
+#define TIE 0
+#define FIRST_TEAM_BY_ABILITY 1
+#define FIRST_TEAM_BY_SPIRIT 2
+#define SECOND_TEAM_BY_ABILITY 3
+#define SECOND_TEAM_BY_SPIRIT 4
+
 int compT_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b) {
     return (*a)->getId() == (*b)->getId() ? 0 : (*a)->getId() < (*b)->getId() ? -1 : 1;
+}
+
+int comp_ability_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b){
+    if((*a)->getAbility() < (*b)->getAbility()) return -1;
+    if((*a)->getAbility() > (*b)->getAbility()) return 1;
+
+    return ((*a)->getId() < (*b)->getId()) ? -1 : 1;
 }
 
 int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_ptr<Team>> &team2) {
@@ -10,20 +23,20 @@ int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_p
 
     if(team1.val->getAbility() > team2.val->getAbility()) {
         team1.val->updateScore(3);
-        return 1;
+        return FIRST_TEAM_BY_ABILITY;
     } else if(team1.val->getAbility() < team2.val->getAbility()) {
         team2.val->updateScore(3);
-        return 3;
+        return SECOND_TEAM_BY_ABILITY;
     } else if (team1.val->getSpirit().strength() > team2.val->getSpirit().strength()) {
         team1.val->updateScore(3);
-        return 2;
+        return FIRST_TEAM_BY_SPIRIT;
     }else if (team1.val->getSpirit().strength() < team2.val->getSpirit().strength()) {
         team2.val->updateScore(3);
-        return 4;
+        return SECOND_TEAM_BY_SPIRIT;
     } else {
         team1.val->updateScore(1);
         team2.val->updateScore(1);
-        return 0;
+        return TIE;
     }
 }
 
@@ -31,12 +44,14 @@ world_cup_t::world_cup_t() : m_playersNodes{}, m_playersHash{}
 {
     // TODO: Your code goes here
     m_teams = new AVLTree<std::shared_ptr<Team>>(compT_func);
+    m_teamsAbility = new AVLTree<std::shared_ptr<Team>>(comp_ability_func);
 }
 
 world_cup_t::~world_cup_t()
 {
 	// TODO: Your code goes here
     delete m_teams;
+    delete m_teamsAbility;
 }
 
 StatusType world_cup_t::add_team(int teamId)
@@ -52,6 +67,7 @@ StatusType world_cup_t::add_team(int teamId)
             return StatusType::FAILURE;
         } else {
             m_teams->insert(new_team);
+            m_teamsAbility->insert(new_team);
             return StatusType::SUCCESS;
         }
     } catch (std::bad_alloc &e){
@@ -74,6 +90,7 @@ StatusType world_cup_t::remove_team(int teamId)
                 representative.val->changePlayerStatus();
             }
             m_teams->delete_node(team);
+            m_teamsAbility->delete_node(team);
             return StatusType::SUCCESS;
         } else {
             return StatusType::FAILURE;
@@ -102,7 +119,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
             auto player = std::make_shared<Player>(playerId, spirit, gamesPlayed, ability, cards, goalKeeper);
             if(m_playersHash.find(playerId) == m_playersHash.end()) {
                 std::pair<int, std::shared_ptr<Player>> po(playerId, player);
+                m_teamsAbility->delete_node(team); // FIX ability tree
                 team_node.val->addNewPlayer(player);
+                m_teamsAbility->insert(team);
                 m_playersHash.insert(po);
                 return StatusType::SUCCESS;
             } else {
@@ -225,8 +244,21 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-	// TODO: Your code goes here
-	return 12345;
+    if( i < 0 || i >= m_teams->get_size() || m_teams->get_size() == 0){
+        return StatusType::FAILURE;
+    }
+    try{
+        auto node = m_teamsAbility->select(i);
+        if(node == nullptr){
+            //shouldn't get here but for debugging purposes :)
+        }
+        else{
+            return node->val->getId();
+        }
+    }
+    catch (std::bad_alloc &e){
+        return StatusType::ALLOCATION_ERROR;
+    }
 }
 
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)

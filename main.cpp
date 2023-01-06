@@ -2,7 +2,7 @@
 #include "UnionFind.h"
 #include "Array.h"
 
-void blackbox() {
+void blackbox(UFNode<int>&, UFNode<int>&) {
     printf("Hello world");
 }
 int main() {
@@ -15,7 +15,7 @@ int main() {
     a.insert(1,b->val);
     a.insert(2, c->val);
 
-    a.unify(*b, *c);
+    a.unify(b, c);
     a.find(2);
 
     return 0;

@@ -43,6 +43,7 @@ public:
     ~AVLTree() {
         recursive_delete(this->root);
     }
+    int get_size(){ return this->tree_size;}
 };
 
 
@@ -227,7 +228,7 @@ int AVLTree<T>::in_order_internal(TreeNode<T> *pRoot, T *arr, int n, int index) 
 
 template<class T>
 TreeNode<T> *AVLTree<T>::select(int k){
-    if(k < 0 || k >= this->tree_size || this->tree_size == 0) return nullptr;
+    if(k < 0 || k >= this->tree_size || this->tree_size == 0) return nullptr; //might not be necessary
     return select_internal(k, this->root);
 }
 
@@ -235,7 +236,7 @@ template<class T>
 TreeNode<T> *AVLTree<T>::select_internal(int k, TreeNode<T> *proot){
     if(proot == nullptr) return nullptr;
 
-    int l = 0; //l = num of nodes in the left subtree.
+    int l = -1; //l = num of nodes in the left subtree. if subtree is null l = -1
     if(proot->left != nullptr) {l = proot->left->w;}
 
     if(l == k-1) return proot; //exactly found the k-th node
