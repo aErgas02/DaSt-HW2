@@ -6,6 +6,7 @@ void blackbox() {
     printf("Hello world");
 }
 int main() {
+
     UnionFind<int> a = UnionFind<int>();
     auto *b = new UFNode<int>(3);
     auto *c = new UFNode<int>(5);
