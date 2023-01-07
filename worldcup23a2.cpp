@@ -245,15 +245,11 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-    if( i < 0 || i >= m_teams->get_size() || m_teams->get_size() == 0){
+    if( i < 0 || i >= m_teamsAbility->get_size() || m_teamsAbility->get_size() == 0){
         return StatusType::FAILURE;
     }
-
     try{
         auto node = m_teamsAbility->select(i);
-        if(node == nullptr){
-            return StatusType::FAILURE;
-        }
         return node->val->getId();
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
