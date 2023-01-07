@@ -26,7 +26,7 @@ protected:
     void recursive_delete(TreeNode<T> *d_node);
     void update_max();
     int in_order_internal(TreeNode<T> *pRoot, T *arr, int n, int index = 0);
-    TreeNode<T> *select_internal(int k, TreeNode<T> *proot);
+    TreeNode<T> *select_internal(int k, TreeNode<T> *pRoot);
 
 public:
     const TreeNode<T> *get_root() const {
@@ -175,6 +175,8 @@ TreeNode<T> *AVLTree<T>::update_tree(TreeNode<T> *node) {
         update_height(node->right);
         update_height(node);
         update_balance_factor(node);
+        update_w(node->left);
+        update_w(node->right);
         update_w(node);
         return res;
     }
@@ -229,25 +231,21 @@ int AVLTree<T>::in_order_internal(TreeNode<T> *pRoot, T *arr, int n, int index) 
 template<class T>
 TreeNode<T> *AVLTree<T>::select(int k){
     if(k < 0 || k >= this->tree_size || this->tree_size == 0) return nullptr; //might not be necessary
-    return select_internal(k, this->root);
+    return select_internal(k + 1, this->root);
 }
 
 template<class T>
-TreeNode<T> *AVLTree<T>::select_internal(int k, TreeNode<T> *proot){
-    if(proot == nullptr) return nullptr;
+TreeNode<T> *AVLTree<T>::select_internal(int k, TreeNode<T> *pRoot){
+    if(pRoot == nullptr) return nullptr;
 
-    int l = -1; //l = num of nodes in the left subtree. if subtree is null l = -1
-    if(proot->left != nullptr) {l = proot->left->w;}
+    int nodes_in_left = get_w(pRoot->left);
 
-    if(l == k-1) return proot; //exactly found the k-th node
+    if(nodes_in_left == k - 1) return pRoot; //exactly found the k-th node
 
-    else if(l > k-1){
-        return select_internal(k, proot->left);
-    }
-
-    //TODO: Changed here
-    else {
-        return select_internal(k - l - 1, proot->right);
+    else if(nodes_in_left > k-1) {
+        return select_internal(k, pRoot->left);
+    } else {
+        return select_internal(k - nodes_in_left - 1, pRoot->right);
     }
 }
 

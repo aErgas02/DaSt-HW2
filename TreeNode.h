@@ -55,14 +55,18 @@ void update_balance_factor(TreeNode<T> *node) {
 }
 
 template<class T>
-int get_w(TreeNode<T> * node){
-    return (node == nullptr) ? -1 : node->w;
+void update_w(TreeNode<T> * node){
+    if(node == nullptr) return;
+    else if(node->left != nullptr && node->right != nullptr) { node->w = node->left->w + node->right->w + 1;}
+    else if(node->left != nullptr) { node->w = node->left->w + 1;}
+    else if(node->right != nullptr) { node->w = node->right->w + 1;}
+    else { node->w = 1;}
 }
 
 template<class T>
-void update_w(TreeNode<T> *node){
-    if(node == nullptr) return;
-    node->w = get_w(node->right) + get_w(node->left) + 2;
+int get_w(TreeNode<T> *node){
+    if(node == nullptr) return 0;
+    return node->w;
 }
 
 template<class T>
@@ -98,6 +102,7 @@ TreeNode<T> *LL(TreeNode<T> *node) {
     update_height(old_root);
     update_balance_factor(old_root);
     update_w(old_root);
+
     update_height(new_root);
     update_balance_factor(new_root);
     update_w(new_root);
@@ -127,6 +132,7 @@ TreeNode<T> *RR(TreeNode<T> *node) {
     update_height(old_root);
     update_balance_factor(old_root);
     update_w(old_root);
+
     update_height(new_root);
     update_balance_factor(new_root);
     update_w(new_root);

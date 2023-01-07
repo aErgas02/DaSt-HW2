@@ -11,6 +11,7 @@ int compT_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b) {
 }
 
 int comp_ability_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b){
+    if((*a)->getId() == (*b)->getId()) return 0;
     if((*a)->getAbility() < (*b)->getAbility()) return -1;
     if((*a)->getAbility() > (*b)->getAbility()) return 1;
 
@@ -121,7 +122,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
                 std::pair<int, std::shared_ptr<Player>> po(playerId, player);
                 m_teamsAbility->delete_node(team); // FIX ability tree
                 team_node.val->addNewPlayer(player);
-                m_teamsAbility->insert(team);
+                m_teamsAbility->insert(team_node.val);
                 m_playersHash.insert(po);
                 return StatusType::SUCCESS;
             } else {
@@ -247,18 +248,14 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
     if( i < 0 || i >= m_teams->get_size() || m_teams->get_size() == 0){
         return StatusType::FAILURE;
     }
+
     try{
         auto node = m_teamsAbility->select(i);
         if(node == nullptr){
-            //shouldn't get here but for debugging purposes :)
-            // TODO: Change
             return StatusType::FAILURE;
         }
-        else{
-            return node->val->getId();
-        }
-    }
-    catch (std::bad_alloc &e){
+        return node->val->getId();
+    } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
     }
 }
