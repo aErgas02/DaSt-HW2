@@ -27,7 +27,9 @@ int Player::get_numOfCards() const {
 }
 
 int Player::get_numOfGames() const {
-    return m_numOfGames;
+    if(m_representative->val.get() == this)
+        return m_numOfGames;
+    return m_representative->val->get_numOfGames() + m_numOfGames;
 }
 
 void Player::updateNumOfGames(int by) {
@@ -55,11 +57,23 @@ bool Player::isPlayerActive() const {
 }
 
 const permutation_t &Player::get_spirit() {
+    // TODO: Fix this
     return m_spirit;
 }
 
-void Player::updateSpirit(permutation_t const& teamSpirit) {
-    m_spirit = teamSpirit * m_spirit;
+void Player::updateSpirit(permutation_t const& teamSpirit, bool isInverse) {
+    if(m_representative == nullptr) { // New Team
+        m_spirit = teamSpirit * m_spirit;
+        return;
+    } else if (m_representative->val.get() == this) {
+        // Updating the representative spirit
+        if(isInverse)
+            m_spirit = teamSpirit.inv() * m_spirit;
+        else
+            m_spirit = teamSpirit * m_spirit;
+    } else {
+        m_spirit = m_representative->val->get_spirit().inv() * teamSpirit * m_spirit;
+    }
 }
 
 int Player::get_ability() const {

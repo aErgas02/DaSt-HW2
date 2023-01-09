@@ -16,13 +16,12 @@ class UnionFind {
 public:
     void (* blackBox)(UFNode<T>&, UFNode<T>&);
     UFNode<T>& insert(int key, T& obj);
-    void unify(UFNode<T> *setBuyer, UFNode<T> *setBought);
+    void unify(UFNode<T> &biggerSet, UFNode<T>&smallerSet);
     bool isObjectExist(int key);
     UFNode<T> *getRoot(UFNode<T> *setA);
     UFNode<T> *find(int key);
 
 private:
-    void unionBySize(UFNode<T> *biggerSet, UFNode<T> *smallerSet);
     void compress(UFNode<T> *node, UFNode<T> *root);
 
     UFNode<T> & find_internal(int key);
@@ -30,21 +29,8 @@ private:
 };
 
 template<class T>
-void UnionFind<T>::unify(UFNode<T> *setBuyer, UFNode<T> *setBought) {
-    if(setBought == nullptr || setBuyer == nullptr) {
-        return; // TODO: isn't supposed to get here
-    } else if(setBuyer->height >= setBought->height) {
-        unionBySize(setBuyer, setBought);
-    } else {
-        unionBySize(setBought, setBuyer);
-        setBought->parent = setBuyer; // we created two pointers pointing to each other
-    }
-}
-
-template<class T>
-void UnionFind<T>::unionBySize(UFNode<T> *biggerSet, UFNode<T> *smallerSet) {
-    smallerSet->parent = biggerSet;
-    biggerSet->height++; // why grow by 1?
+void UnionFind<T>::unify(UFNode<T> &biggerSet, UFNode<T>&smallerSet) {
+    smallerSet.parent = &biggerSet;
 }
 
 template<class T>
@@ -68,7 +54,7 @@ template<class T>
 void UnionFind<T>::compress(UFNode<T> *node, UFNode<T> *root) {
     if(node->parent == root) return;
     compress(node->parent, root);
-    blackBox(*node, *root);
+    blackBox(*node, *node->parent);
     node->parent = root;
 }
 
@@ -77,7 +63,6 @@ UFNode<T>& UnionFind<T>::insert(int key, T& obj) {
     auto node = std::make_shared<UFNode<T>>(obj);
     std::pair<int, std::shared_ptr<UFNode<T>>> pa{key, node};
     m_hashTable.insert(pa);
-
     return *node;
 }
 

@@ -25,11 +25,11 @@ public:
     UFNode<std::shared_ptr<Player>>* get_representative() const;
     UFNode<std::shared_ptr<Player>>& getLastNode();
 
-    void updateTeamStatus();
     void updateTeamSpirit(permutation_t spirit);
     void updateTeamAbility(int ability);
     void updatePlayerNumGames(std::shared_ptr<Player>& player);
-    void updateRepresentative(UFNode<std::shared_ptr<Player>> *representativePlayer);
+    void updateRepresentative(UFNode<std::shared_ptr<Player>> *player);
+    void buyTeam(std::shared_ptr<Team> &team2);
     StatusType addNewPlayer(std::shared_ptr<Player>& player);
 
 private:
@@ -45,7 +45,8 @@ private:
 
     UnionFind<std::shared_ptr<Player>>* m_players = nullptr;
     UFNode<std::shared_ptr<Player>>* m_representativePlayer = nullptr;
-    UFNode<std::shared_ptr<Player>>* m_lastNode = nullptr;
+
+    void update_team(std::shared_ptr<Team>& team);
 };
 
 

@@ -179,9 +179,7 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
         if(res_parent == nullptr || res_player == nullptr) {
             return StatusType::FAILURE;
         }
-        if(res_player->get()->get_id() == res_parent->val->get_id())
-            return res_parent->val->get_numOfGames();
-        return res_parent->val->get_numOfGames() + (*res_player)->get_numOfGames();
+        return (*res_player)->get_numOfGames();
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -294,10 +292,10 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
         auto team2 = std::make_shared<Team>(teamId2, m_playersNodes);
 
         if(m_teams->object_exists(team1) && m_teams->object_exists(team2)) {
-            auto team1_rep = m_teams->find_object(team1)->val->get_representative();
-            auto team2_rep = m_teams->find_object(team2)->val->get_representative();
+            auto team1_rep = m_teams->find_object(team1);
+            auto team2_rep = m_teams->find_object(team2);
 
-//            m_playersNodes.unify(team1_rep, team2_rep);
+            team1_rep->val->buyTeam(team2_rep->val);
             m_teams->delete_node(team2);
             return StatusType::SUCCESS;
         }
