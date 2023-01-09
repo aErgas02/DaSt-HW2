@@ -139,7 +139,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
         return StatusType::ALLOCATION_ERROR;
     }
 }
-//
+
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 {
 	// TODO: Your code goes here
@@ -172,11 +172,10 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
     if(playerId <= 0) {
         return StatusType::INVALID_INPUT;
     }
-
     try {
-        auto res_parent = m_playersNodes.find(playerId);
+        m_playersNodes.find(playerId); // TODO: LIVDOK
         auto res_player = m_playersHash.find(playerId);
-        if(res_parent == nullptr || res_player == nullptr) {
+        if(res_player == nullptr) {
             return StatusType::FAILURE;
         }
         return (*res_player)->get_numOfGames();
@@ -272,8 +271,6 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
             return StatusType::FAILURE;
         }
         if(res_parent->val->isPlayerActive()) {
-            if(res_player->get()->get_id() == res_parent->val->get_id())
-                return res_parent->val->get_spirit();
             return res_player->get()->get_spirit();
         }
         return StatusType::FAILURE;

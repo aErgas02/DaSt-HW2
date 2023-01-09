@@ -7,6 +7,7 @@
 
 #include "wet2util.h"
 #include "UnionFind.h"
+#include "wet2util.h"
 
 class Player {
 
@@ -15,7 +16,7 @@ public:
            int numOfCards, bool goalKeeper);
 
     int get_id() const;
-    const permutation_t& get_spirit();
+    permutation_t get_spirit();
     int get_numOfGames() const;
     int get_ability() const;
     int get_numOfCards() const;
@@ -25,7 +26,7 @@ public:
     void updateNumOfCards(int numOfCards);
     void updateNumOfGames(int by);
     void changePlayerStatus();
-    void updateSpirit(permutation_t const& teamSpirit, bool isInverse);
+    void updateSpirit(permutation_t const& teamSpirit);
 
     UFNode<std::shared_ptr<Player>> &getRepresentative();
     void updateRepresentative(UFNode<std::shared_ptr<Player>> &new_representative);

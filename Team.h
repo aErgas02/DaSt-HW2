@@ -7,6 +7,7 @@
 
 #include "UnionFind.h"
 #include "Player.h"
+#include "wet2util.h"
 #include <memory>
 
 class Team {

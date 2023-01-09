@@ -56,21 +56,20 @@ bool Player::isPlayerActive() const {
     return m_isActive;
 }
 
-const permutation_t &Player::get_spirit() {
-    // TODO: Fix this
-    return m_spirit;
+permutation_t Player::get_spirit() {
+    if(this == m_representative->val.get()){
+        return m_spirit;
+    }
+    return m_representative->val->get_spirit() * m_spirit;
 }
 
-void Player::updateSpirit(permutation_t const& teamSpirit, bool isInverse) {
+void Player::updateSpirit(permutation_t const& teamSpirit) {
     if(m_representative == nullptr) { // New Team
         m_spirit = teamSpirit * m_spirit;
         return;
     } else if (m_representative->val.get() == this) {
         // Updating the representative spirit
-        if(isInverse)
-            m_spirit = teamSpirit.inv() * m_spirit;
-        else
-            m_spirit = teamSpirit * m_spirit;
+        m_spirit = teamSpirit * m_spirit;
     } else {
         m_spirit = m_representative->val->get_spirit().inv() * teamSpirit * m_spirit;
     }

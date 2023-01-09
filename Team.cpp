@@ -6,7 +6,8 @@
 
 Team::Team(int teamId, UnionFind<std::shared_ptr<Player>>& players) :
     m_id(teamId),
-    m_players(&players)
+    m_players(&players),
+    m_teamSpirit(permutation_t().neutral())
     {}
 
 int Team::getId() const {
@@ -48,7 +49,7 @@ void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *player) {
         m_representativePlayer = player;
     } else {
         m_players->unify(*m_representativePlayer, *player);
-        player->val->updateSpirit(m_representativePlayer->val->get_spirit(), true);
+        player->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit);
         updatePlayerNumGames(player->val);
     }
     player->val->updateRepresentative(*m_representativePlayer);
@@ -62,7 +63,7 @@ StatusType Team::addNewPlayer(std::shared_ptr<Player>& player) {
 
     updateRepresentative(&p_node);
     updateTeamAbility(player->get_ability());
-    updateTeamSpirit(player->get_spirit());
+    updateTeamSpirit(m_representativePlayer->val->get_spirit() * player->get_spirit());
 
     return StatusType::SUCCESS;
 }
@@ -95,19 +96,17 @@ void Team::buyTeam(std::shared_ptr<Team>& team2) {
     else if(m_teamSize == 0) {
         // Team1 is empty
         update_team(team2);
-    } else if(m_teamSize >= team2->getSize()) {
+    } else if(m_representativePlayer->height >= team2->m_representativePlayer->height) {
         // Team1 is bigger
-        team2->m_representativePlayer->val->updateSpirit(m_representativePlayer->val->get_spirit().inv(), true); // TODO: check this out
+        team2->m_representativePlayer->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit);
         team2->m_representativePlayer->val->updateNumOfGames(-m_representativePlayer->val->get_numOfGames());
-        team2->m_representativePlayer->parent = m_representativePlayer;
-        team2->m_representativePlayer->val->updateRepresentative(*m_representativePlayer);
+        m_teamSpirit = m_teamSpirit * team2->m_teamSpirit;
         m_players->unify(*m_representativePlayer, *team2->m_representativePlayer);
     } else {
         // Team2 is bigger
         m_representativePlayer->val->updateNumOfGames(-team2->m_representativePlayer->val->get_numOfGames());
-        team2->m_representativePlayer->val->updateSpirit(m_teamSpirit, false);
-        m_representativePlayer->val->updateSpirit(team2->m_representativePlayer->val->get_spirit().inv(), true);
-        m_representativePlayer->parent = team2->m_representativePlayer;
+        team2->m_representativePlayer->val->updateSpirit(m_teamSpirit);
+        m_representativePlayer->val->updateSpirit(team2->m_representativePlayer->val->get_spirit().inv());
         m_representativePlayer->val->updateRepresentative(*team2->m_representativePlayer);
         m_players->unify(*team2->m_representativePlayer, *m_representativePlayer);
     }
@@ -119,4 +118,6 @@ void Team::update_team(std::shared_ptr<Team>& team) {
     m_score = team->m_score;
     m_teamSize = team->m_teamSize;
     m_ability = team->m_ability;
+    m_representativePlayer = team->m_representativePlayer;
+    m_players = team->m_players;
 }
