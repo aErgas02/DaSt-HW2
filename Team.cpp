@@ -47,7 +47,7 @@ void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *representativeP
         m_representativePlayer = representativePlayer;
         m_lastNode = m_representativePlayer;
     } else {
-        m_players->unify(m_representativePlayer, representativePlayer);
+        m_players->unify(m_lastNode, representativePlayer);
         representativePlayer->val->updateSpirit(representativePlayer->parent->val->get_spirit());
         updatePlayerNumGames(representativePlayer->val);
         m_lastNode = representativePlayer;

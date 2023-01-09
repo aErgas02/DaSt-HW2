@@ -179,7 +179,7 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
         if(res_parent == nullptr || res_player == nullptr) {
             return StatusType::FAILURE;
         }
-        if((*res_player)->get_id() == res_parent->val->get_id())
+        if(res_player->get()->get_id() == res_parent->val->get_id())
             return res_parent->val->get_numOfGames();
         return res_parent->val->get_numOfGames() + (*res_player)->get_numOfGames();
     } catch(std::bad_alloc &e) {
@@ -274,11 +274,9 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
             return StatusType::FAILURE;
         }
         if(res_parent->val->isPlayerActive()) {
-
-            // TODO: Change here
-            if((*res_player)->get_id() == res_parent->val->get_id())
+            if(res_player->get()->get_id() == res_parent->val->get_id())
                 return res_parent->val->get_spirit();
-            return (*res_player)->get_spirit();
+            return res_player->get()->get_spirit();
         }
         return StatusType::FAILURE;
     } catch(std::bad_alloc &e) {
