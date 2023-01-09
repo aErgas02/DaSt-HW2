@@ -21,6 +21,7 @@
 #include "Team.h"
 #include "Player.h"
 #include <memory>
+#include "HashTable.h"
 
 class world_cup_t {
 private:
@@ -31,7 +32,7 @@ private:
     AVLTree<std::shared_ptr<Team>> *m_teams;
     AVLTree<std::shared_ptr<Team>> *m_teamsAbility;
     UnionFind<std::shared_ptr<Player>> m_playersNodes;
-    std::unordered_map<int, std::shared_ptr<Player>> m_playersHash;
+    HashTable<std::shared_ptr<Player>> m_playersHash;
 
 public:
 	// <DO-NOT-MODIFY> {

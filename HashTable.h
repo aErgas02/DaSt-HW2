@@ -37,11 +37,21 @@ int HashTable<T>::hash_func(int id) {
 
 template<class T>
 void HashTable<T>::resize() {
-    auto new_arr = new LinkedList<T>[size*2];
-    for(int i = 0; i < size; i++){
-        new_arr[i] = arr[i];
-    }
     size *= 2;
+    auto new_arr = new LinkedList<T>[size];
+
+    LinkedNode<T>* iter;
+    int index;
+
+    for(int i = 0; i < (size/2); i++){ //go through entire old array
+        iter = (arr[i].get_first());
+
+        while(iter != nullptr){
+            index = hash_func(iter->get_val()->get()->get_id()); //todo: if not used only by players - fix get id function
+            new_arr[index].insert(*iter->get_val());
+            iter = iter->get_next();
+        }
+    }
     delete[] arr;
     arr = new_arr;
 }

@@ -18,6 +18,11 @@ int comp_ability_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b){
     return ((*a)->getId() < (*b)->getId()) ? -1 : 1;
 }
 
+bool comp_player_func(std::shared_ptr<Player> * player, int id){
+    if((*player)->get_id() == id) return true;
+    return false;
+}
+
 int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_ptr<Team>> &team2) {
     team1.val->get_representative()->val->updateNumOfGames(1);
     team2.val->get_representative()->val->updateNumOfGames(1);
@@ -41,7 +46,7 @@ int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_p
     }
 }
 
-world_cup_t::world_cup_t() : m_playersNodes{}, m_playersHash{}
+world_cup_t::world_cup_t() : m_playersNodes{}, m_playersHash{comp_player_func}
 {
     // TODO: Your code goes here
     m_teams = new AVLTree<std::shared_ptr<Team>>(compT_func);
@@ -118,12 +123,11 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
             // Add to team
             auto team_node = *m_teams->find_object(team);
             auto player = std::make_shared<Player>(playerId, spirit, gamesPlayed, ability, cards, goalKeeper);
-            if(m_playersHash.find(playerId) == m_playersHash.end()) {
-                std::pair<int, std::shared_ptr<Player>> po(playerId, player);
+            if(m_playersHash.find(playerId) == nullptr) {
                 m_teamsAbility->delete_node(team); // FIX ability tree
                 team_node.val->addNewPlayer(player);
                 m_teamsAbility->insert(team_node.val);
-                m_playersHash.insert(po);
+                m_playersHash.insert(playerId, player);
                 return StatusType::SUCCESS;
             } else {
                 return StatusType::FAILURE;
@@ -172,12 +176,12 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
     try {
         auto res_parent = m_playersNodes.find(playerId);
         auto res_player = m_playersHash.find(playerId);
-        if(res_parent == nullptr) {
+        if(res_parent == nullptr || res_player == nullptr) {
             return StatusType::FAILURE;
         }
-        if(res_player->second->get_id() == res_parent->val->get_id())
+        if((*res_player)->get_id() == res_parent->val->get_id())
             return res_parent->val->get_numOfGames();
-        return res_parent->val->get_numOfGames() + res_player->second->get_numOfGames();
+        return res_parent->val->get_numOfGames() + (*res_player)->get_numOfGames();
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -192,11 +196,11 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
 
     try {
         auto res = m_playersHash.find(playerId);
-        if(res == m_playersHash.end()) {
+        if(res == nullptr) {
             return StatusType::FAILURE;
         }
-        if(res->second->isPlayerActive()) {
-            res->second->updateNumOfCards(cards);
+        if((*res)->isPlayerActive()) {
+            (*res)->updateNumOfCards(cards);
             return StatusType::SUCCESS;
         }
         return StatusType::FAILURE;
@@ -214,11 +218,11 @@ output_t<int> world_cup_t::get_player_cards(int playerId)
 
     try {
         auto res = m_playersHash.find(playerId);
-        if(res == m_playersHash.end()) {
+        if(res == nullptr) {
             return StatusType::FAILURE;
         }
-        auto player = res->second;
-        return res->second->get_numOfCards();
+        auto player = *res; //todo: check why no use of player?
+        return (*res)->get_numOfCards();
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -266,15 +270,15 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
     try{
         auto res_parent = m_playersNodes.find(playerId);
         auto res_player = m_playersHash.find(playerId);
-        if(res_parent == nullptr) {
+        if(res_parent == nullptr || res_player == nullptr) {
             return StatusType::FAILURE;
         }
         if(res_parent->val->isPlayerActive()) {
 
             // TODO: Change here
-            if(res_player->second->get_id() == res_parent->val->get_id())
+            if((*res_player)->get_id() == res_parent->val->get_id())
                 return res_parent->val->get_spirit();
-            return res_player->second->get_spirit();
+            return (*res_player)->get_spirit();
         }
         return StatusType::FAILURE;
     } catch(std::bad_alloc &e) {

@@ -57,6 +57,9 @@ public:
         }
         return nullptr;
     }
+
+    LinkedNode<T>* get_first() {return first;}
+
 };
 
 #endif //WET2_LINKEDLIST_H

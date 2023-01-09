@@ -32,24 +32,24 @@ private:
 template<class T>
 void UnionFind<T>::unify(UFNode<T> *setBuyer, UFNode<T> *setBought) {
     if(setBought == nullptr || setBuyer == nullptr) {
-        return;
+        return; // TODO: isn't supposed to get here
     } else if(setBuyer->height >= setBought->height) {
         unionBySize(setBuyer, setBought);
     } else {
         unionBySize(setBought, setBuyer);
-        setBought->parent = setBuyer;
+        setBought->parent = setBuyer; // we created two pointers pointing to each other
     }
 }
 
 template<class T>
 void UnionFind<T>::unionBySize(UFNode<T> *biggerSet, UFNode<T> *smallerSet) {
     smallerSet->parent = biggerSet;
-    biggerSet->height++;
+    biggerSet->height++; // why grow by 1?
 }
 
 template<class T>
 UFNode<T>& UnionFind<T>::find_internal(int key) {
-    UFNode<T>* set = m_hashTable.find(key)->second.get();
+    UFNode<T>* set = m_hashTable.find(key)->second.get(); // what does it do
     UFNode<T>* root = getRoot(set);
 //    compress(set, root);
     return *root;
