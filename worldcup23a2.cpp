@@ -6,6 +6,12 @@
 #define SECOND_TEAM_BY_ABILITY 3
 #define SECOND_TEAM_BY_SPIRIT 4
 
+void blackBox(UFNode<std::shared_ptr<Player>> &set, UFNode<std::shared_ptr<Player>> &parent) {
+    set.val->updateNumOfGames(-parent.parent->val->get_numOfGames() + parent.val->get_numOfGames());
+    set.val->updateSpirit(  parent.val->get_spirit(), false);
+    set.val->updateRepresentative(parent.val->getRepresentative());
+}
+
 int compT_func(std::shared_ptr<Team> *a, std::shared_ptr<Team> *b) {
     return (*a)->getId() == (*b)->getId() ? 0 : (*a)->getId() < (*b)->getId() ? -1 : 1;
 }
@@ -49,6 +55,7 @@ int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_p
 world_cup_t::world_cup_t() : m_playersNodes{}, m_playersHash{comp_player_func}
 {
     // TODO: Your code goes here
+    m_playersNodes.blackBox = blackBox;
     m_teams = new AVLTree<std::shared_ptr<Team>>(compT_func);
     m_teamsAbility = new AVLTree<std::shared_ptr<Team>>(comp_ability_func);
 }

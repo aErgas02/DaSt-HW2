@@ -49,7 +49,7 @@ void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *player) {
         m_representativePlayer = player;
     } else {
         m_players->unify(*m_representativePlayer, *player);
-        player->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit);
+        player->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit, true);
         updatePlayerNumGames(player->val);
     }
     player->val->updateRepresentative(*m_representativePlayer);
@@ -63,7 +63,7 @@ StatusType Team::addNewPlayer(std::shared_ptr<Player>& player) {
 
     updateRepresentative(&p_node);
     updateTeamAbility(player->get_ability());
-    updateTeamSpirit(m_representativePlayer->val->get_spirit() * player->get_spirit());
+    updateTeamSpirit(player->get_spirit());
 
     return StatusType::SUCCESS;
 }
@@ -98,15 +98,16 @@ void Team::buyTeam(std::shared_ptr<Team>& team2) {
         update_team(team2);
     } else if(m_representativePlayer->height >= team2->m_representativePlayer->height) {
         // Team1 is bigger
-        team2->m_representativePlayer->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit);
+        team2->m_representativePlayer->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit, true);
         team2->m_representativePlayer->val->updateNumOfGames(-m_representativePlayer->val->get_numOfGames());
+        team2->m_representativePlayer->val->updateRepresentative(*m_representativePlayer);
         m_teamSpirit = m_teamSpirit * team2->m_teamSpirit;
         m_players->unify(*m_representativePlayer, *team2->m_representativePlayer);
     } else {
         // Team2 is bigger
         m_representativePlayer->val->updateNumOfGames(-team2->m_representativePlayer->val->get_numOfGames());
-        team2->m_representativePlayer->val->updateSpirit(m_teamSpirit);
-        m_representativePlayer->val->updateSpirit(team2->m_representativePlayer->val->get_spirit().inv());
+        team2->m_representativePlayer->val->updateSpirit(m_teamSpirit, true);
+        m_representativePlayer->val->updateSpirit(team2->m_representativePlayer->val->get_spirit().inv(), true);
         m_representativePlayer->val->updateRepresentative(*team2->m_representativePlayer);
         m_players->unify(*team2->m_representativePlayer, *m_representativePlayer);
     }
