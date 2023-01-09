@@ -33,12 +33,12 @@ public:
 
 private:
     int m_id;
+    permutation_t m_spirit;
     int m_numOfGames;
     int m_ability;
     int m_numOfCards;
     bool m_goalKeeper;
     bool m_isActive = true;
-    permutation_t m_spirit;
 
     UFNode<std::shared_ptr<Player>> *m_representative = nullptr;
 };

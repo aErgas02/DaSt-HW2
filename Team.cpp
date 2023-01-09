@@ -6,8 +6,8 @@
 
 Team::Team(int teamId, UnionFind<std::shared_ptr<Player>>& players) :
     m_id(teamId),
-    m_players(&players),
-    m_teamSpirit(permutation_t().neutral())
+    m_teamSpirit(permutation_t().neutral()),
+    m_players(&players)
     {}
 
 int Team::getId() const {
