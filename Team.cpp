@@ -57,13 +57,14 @@ void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *player) {
 
 StatusType Team::addNewPlayer(std::shared_ptr<Player>& player) {
     auto& p_node = m_players->insert(player->get_id(), player);
+    permutation_t init_spirit = player->get_spirit();
     increaseTeamSize();
     if(player->isGoalKeeper())
         addGoalKeeper();
 
     updateRepresentative(&p_node);
     updateTeamAbility(player->get_ability());
-    updateTeamSpirit(player->get_spirit());
+    updateTeamSpirit(init_spirit);
 
     return StatusType::SUCCESS;
 }
@@ -77,7 +78,7 @@ int Team::getAbility() const {
 }
 
 void Team::updateTeamSpirit(permutation_t spirit) {
-    m_teamSpirit = spirit;
+    m_teamSpirit = m_teamSpirit * spirit;
 }
 
 void Team::updateTeamAbility(int ability) {

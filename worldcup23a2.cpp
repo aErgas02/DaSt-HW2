@@ -131,7 +131,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
             auto team_node = *m_teams->find_object(team);
             auto player = std::make_shared<Player>(playerId, spirit, gamesPlayed, ability, cards, goalKeeper);
             if(m_playersHash.find(playerId) == nullptr) {
-                m_teamsAbility->delete_node(team); // FIX ability tree
+                m_teamsAbility->delete_node(team_node.val); // FIX ability tree
                 team_node.val->addNewPlayer(player);
                 m_teamsAbility->insert(team_node.val);
                 m_playersHash.insert(playerId, player);

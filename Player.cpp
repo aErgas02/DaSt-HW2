@@ -57,7 +57,7 @@ bool Player::isPlayerActive() const {
 }
 
 permutation_t Player::get_spirit() {
-    if(this == m_representative->val.get()){
+    if(m_representative == nullptr || this == m_representative->val.get()){
         return m_spirit;
     }
     return m_representative->val->get_spirit() * m_spirit;
