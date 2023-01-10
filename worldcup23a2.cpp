@@ -33,10 +33,10 @@ int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_p
     team1.val->get_representative()->val->updateNumOfGames(1);
     team2.val->get_representative()->val->updateNumOfGames(1);
 
-    if(team1.val->getAbility() > team2.val->getAbility()) {
+    if(team1.val->fightAbility() > team2.val->fightAbility()) {
         team1.val->updateScore(3);
         return FIRST_TEAM_BY_ABILITY;
-    } else if(team1.val->getAbility() < team2.val->getAbility()) {
+    } else if(team1.val->fightAbility() < team2.val->fightAbility()) {
         team2.val->updateScore(3);
         return SECOND_TEAM_BY_ABILITY;
     } else if (team1.val->getSpirit().strength() > team2.val->getSpirit().strength()) {
@@ -149,9 +149,6 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 {
-    if(teamId1 == 51696 && teamId2 == 9){
-        printf("Fuck");
-    }
 	// TODO: Your code goes here
     if(teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) {
         return StatusType::INVALID_INPUT;

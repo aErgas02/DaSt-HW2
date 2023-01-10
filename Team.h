@@ -21,6 +21,7 @@ public:
     int getScore() const;
     int getSize() const;
     int getAbility() const;
+    int fightAbility() const;
 
     void updateScore(int byAmount);
     UFNode<std::shared_ptr<Player>>* get_representative() const;
@@ -34,7 +35,7 @@ public:
 
 private:
     int m_id;
-    permutation_t m_teamSpirit = permutation_t().neutral();
+    permutation_t m_teamSpirit;
     int m_numOfGoalKeepers;
     int m_score;
     int m_teamSize;

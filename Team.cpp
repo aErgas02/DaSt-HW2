@@ -80,6 +80,10 @@ int Team::getAbility() const {
     return m_ability;
 }
 
+int Team::fightAbility() const {
+    return m_ability + m_score;
+}
+
 void Team::updateTeamSpirit(permutation_t spirit) {
     m_teamSpirit = m_teamSpirit * spirit;
 }
