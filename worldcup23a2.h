@@ -32,14 +32,14 @@ private:
     AVLTree<std::shared_ptr<Team>> *m_teams;
     AVLTree<std::shared_ptr<Team>> *m_teamsAbility;
     UnionFind<std::shared_ptr<Player>> m_playersNodes;
-    std::unordered_map<int, std::shared_ptr<Player>> m_playersHash;
+    HashTable<std::shared_ptr<Player>> m_playersHash;
 
 public:
 	// <DO-NOT-MODIFY> {
 	
 	world_cup_t();
 	virtual ~world_cup_t();
-//
+
 	StatusType add_team(int teamId);
 	
 	StatusType remove_team(int teamId);

@@ -9,22 +9,26 @@
 #include <unordered_map>
 #include <utility>
 #include <memory>
+#include "HashTable.h"
 
 template <class T>
 class UnionFind {
 
 public:
-    void (* blackBox)(UFNode<T>&, UFNode<T>&);
     UFNode<T>& insert(int key, T& obj);
     void unify(UFNode<T> &biggerSet, UFNode<T>&smallerSet);
     bool isObjectExist(int key);
     UFNode<T> *getRoot(UFNode<T> *setA);
     UFNode<T> *find(int key);
 
+    UnionFind(void (* func)(UFNode<T>&, UFNode<T>&));
+    void (* blackBox)(UFNode<T>&, UFNode<T>&);
+
 private:
     void compress(UFNode<T> *node, UFNode<T> *root);
 
     UFNode<T> & find_internal(int key);
+//    HashTable<std::shared_ptr<UFNode<T>>> new_hashTable;
     std::unordered_map<int, std::shared_ptr<UFNode<T>>> m_hashTable;
 };
 
@@ -62,6 +66,7 @@ template<class T>
 UFNode<T>& UnionFind<T>::insert(int key, T& obj) {
     auto node = std::make_shared<UFNode<T>>(obj);
     std::pair<int, std::shared_ptr<UFNode<T>>> pa{key, node};
+//    m_hashTable.insert(key, node);
     m_hashTable.insert(pa);
     return *node;
 }
@@ -81,6 +86,12 @@ UFNode<T> *UnionFind<T>::find(int key) {
     }
     return nullptr;
 }
+
+template<class T>
+UnionFind<T>::UnionFind(void (*func)(UFNode<T> &, UFNode<T> &)) :
+    blackBox{func}
+//    new_hashTable{compare_objs}
+{}
 
 
 #endif //WET2_UNIONFIND_H
