@@ -14,6 +14,12 @@ public:
             val(val),
             parent(this)
     {}
+
+    int get_id() {
+        return val.get()->get_id();
+    }
+
+
 };
 
 #endif //WET2_UFNODE_H

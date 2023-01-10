@@ -29,7 +29,7 @@ bool comp_player_func(std::shared_ptr<Player> * player, int id){
     return false;
 }
 
-bool comp_node_func(std::shared_ptr<UFNode<std::shared_ptr<Player>>>* playerNode, int id) {
+bool comp_node_func(std::shared_ptr<UFNode<std::shared_ptr<Player>>> *playerNode, int id) {
     if (playerNode->get()->val->get_id() == id) return true;
     return false;
 }
@@ -57,7 +57,7 @@ int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_p
     }
 }
 
-world_cup_t::world_cup_t() : m_playersNodes{blackBox}, m_playersHash{comp_player_func}
+world_cup_t::world_cup_t() : m_playersNodes{blackBox, comp_node_func}, m_playersHash{comp_player_func}
 {
     // TODO: Your code goes here
 //    m_playersNodes.blackBox = blackBox;
