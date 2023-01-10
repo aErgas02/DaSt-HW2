@@ -31,6 +31,7 @@ void print(string cmd, output_t<T> res);
 
 int main()
 {
+    auto num = 0;
 	cin >> std::boolalpha;
 	
 	int pid, tid, tid2;
@@ -45,6 +46,9 @@ int main()
 	string op;
 	while (cin >> op)
 	{
+        if (++num == 570) {
+            int a = 5;
+        }
 		if (!op.compare("add_team"))
 		{
 			cin >> tid;

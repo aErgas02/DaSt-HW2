@@ -60,7 +60,6 @@ int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_p
 world_cup_t::world_cup_t() : m_playersNodes{blackBox, comp_node_func}, m_playersHash{comp_player_func}
 {
     // TODO: Your code goes here
-//    m_playersNodes.blackBox = blackBox;
     m_teams = new AVLTree<std::shared_ptr<Team>>(compT_func);
     m_teamsAbility = new AVLTree<std::shared_ptr<Team>>(comp_ability_func);
 }
@@ -204,12 +203,12 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
     }
 
     try {
-        m_playersNodes.find(playerId);
+        auto rep = m_playersNodes.find(playerId);
         auto res = m_playersHash.find(playerId);
         if(res == nullptr) {
             return StatusType::FAILURE;
         }
-        if(res->get()->getRepresentative().val->isPlayerActive()) {
+        if(rep->val->isPlayerActive()) {
             res->get()->updateNumOfCards(cards);
             return StatusType::SUCCESS;
         }

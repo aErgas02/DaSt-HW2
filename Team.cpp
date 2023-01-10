@@ -120,9 +120,10 @@ void Team::buyTeam(std::shared_ptr<Team>& team2) {
         m_representativePlayer->val->updateSpirit(team2->m_representativePlayer->val->get_spirit().inv());
         m_representativePlayer->val->updateRepresentative(*team2->m_representativePlayer);
         updateTeamSpirit(team2->m_teamSpirit);
-        team2->m_ability += m_ability;
-        team2->m_numOfGoalKeepers += m_numOfGoalKeepers;
+        m_ability += team2->m_ability;
+        m_numOfGoalKeepers += team2->m_numOfGoalKeepers;
         m_players->unify(*team2->m_representativePlayer, *m_representativePlayer);
+        m_representativePlayer = team2->m_representativePlayer;
     }
 }
 

@@ -7,7 +7,7 @@ public:
 
     T val;
     UFNode<T> *parent;
-    int height = 0;
+    int height = 1;
 
     UFNode() = default;
     explicit UFNode(const T& val) :

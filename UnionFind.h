@@ -6,8 +6,6 @@
 #define WET2_UNIONFIND_H
 
 #include "UFNode.h"
-#include <unordered_map>
-#include <utility>
 #include <memory>
 #include "HashTable.h"
 
@@ -34,6 +32,7 @@ private:
 template<class T>
 void UnionFind<T>::unify(UFNode<T> &biggerSet, UFNode<T>&smallerSet) {
     smallerSet.parent = &biggerSet;
+    biggerSet.height += smallerSet.height;
 }
 
 template<class T>
