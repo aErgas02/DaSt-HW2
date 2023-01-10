@@ -8,7 +8,7 @@
 
 void blackBox(UFNode<std::shared_ptr<Player>> &set, UFNode<std::shared_ptr<Player>> &parent) {
     set.val->updateNumOfGames(-parent.parent->val->get_numOfGames() + parent.val->get_numOfGames());
-    set.val->updateSpirit(  parent.val->get_spirit(), false);
+    set.val->updateSpirit(  parent.parent->val->get_spirit().inv() * parent.val->get_spirit());
     set.val->updateRepresentative(parent.val->getRepresentative());
 }
 
@@ -52,7 +52,7 @@ int runSimulation(TreeNode<std::shared_ptr<Team>> &team1, TreeNode<std::shared_p
     }
 }
 
-world_cup_t::world_cup_t() : m_playersNodes{}, m_playersHash{comp_player_func}
+world_cup_t::world_cup_t() : m_playersNodes{}, m_playersHash{}
 {
     // TODO: Your code goes here
     m_playersNodes.blackBox = blackBox;
@@ -94,16 +94,16 @@ StatusType world_cup_t::remove_team(int teamId)
     if(teamId <= 0) {
         return StatusType::INVALID_INPUT;
     }
-
     try {
         auto team = std::make_shared<Team>(teamId, m_playersNodes);
         if(m_teams->object_exists(team)) {
-            if(m_teams->find_object(team)->val->getSize() > 0) {
-                auto representative = m_teams->find_object(team)->val->get_representative();
+            auto team_node = m_teams->find_object(team);
+            if(team_node->val->getSize() > 0) {
+                auto representative = team_node->val->get_representative();
                 representative->val->changePlayerStatus();
             }
-            m_teams->delete_node(team);
-            m_teamsAbility->delete_node(team);
+            m_teamsAbility->delete_node(team_node->val);
+            m_teams->delete_node(team_node->val);
             return StatusType::SUCCESS;
         } else {
             return StatusType::FAILURE;
@@ -122,19 +122,19 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
         return StatusType::INVALID_INPUT;
     }
 
-    // TODO: Check what happens if team is not active anymore
     try {
         // Player params are valid.
         auto team = std::make_shared<Team>(teamId, m_playersNodes);
         if (m_teams->object_exists(team)) {
             // Add to team
-            auto team_node = *m_teams->find_object(team);
+            auto team_node = m_teams->find_object(team);
             auto player = std::make_shared<Player>(playerId, spirit, gamesPlayed, ability, cards, goalKeeper);
-            if(m_playersHash.find(playerId) == nullptr) {
-                m_teamsAbility->delete_node(team_node.val); // FIX ability tree
-                team_node.val->addNewPlayer(player);
-                m_teamsAbility->insert(team_node.val);
-                m_playersHash.insert(playerId, player);
+            if(m_playersHash.find(playerId) == m_playersHash.end()) {
+                std::pair<int, std::shared_ptr<Player>> po(playerId, player);
+                m_teamsAbility->delete_node(team_node->val); // FIX ability tree
+                team_node->val->addNewPlayer(player);
+                m_teamsAbility->insert(team_node->val);
+                m_playersHash.insert(po);
                 return StatusType::SUCCESS;
             } else {
                 return StatusType::FAILURE;
@@ -149,6 +149,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 {
+    if(teamId1 == 51696 && teamId2 == 9){
+        printf("Fuck");
+    }
 	// TODO: Your code goes here
     if(teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) {
         return StatusType::INVALID_INPUT;
@@ -180,12 +183,12 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
         return StatusType::INVALID_INPUT;
     }
     try {
-        m_playersNodes.find(playerId); // TODO: LIVDOK
+        auto res_parent = m_playersNodes.find(playerId);
         auto res_player = m_playersHash.find(playerId);
-        if(res_player == nullptr) {
+        if(res_parent == nullptr) {
             return StatusType::FAILURE;
         }
-        return (*res_player)->get_numOfGames();
+        return (*res_player).second->get_numOfGames();
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -199,12 +202,13 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
     }
 
     try {
+        m_playersNodes.find(playerId);
         auto res = m_playersHash.find(playerId);
-        if(res == nullptr) {
+        if(res == m_playersHash.end()) {
             return StatusType::FAILURE;
         }
-        if((*res)->isPlayerActive()) {
-            (*res)->updateNumOfCards(cards);
+        if(res->second->getRepresentative().val->isPlayerActive()) {
+            res->second->updateNumOfCards(cards);
             return StatusType::SUCCESS;
         }
         return StatusType::FAILURE;
@@ -222,11 +226,11 @@ output_t<int> world_cup_t::get_player_cards(int playerId)
 
     try {
         auto res = m_playersHash.find(playerId);
-        if(res == nullptr) {
+        if(res == m_playersHash.end()) {
             return StatusType::FAILURE;
         }
         auto player = *res; //todo: check why no use of player?
-        return (*res)->get_numOfCards();
+        return res->second->get_numOfCards();
     } catch(std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -274,11 +278,11 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
     try{
         auto res_parent = m_playersNodes.find(playerId);
         auto res_player = m_playersHash.find(playerId);
-        if(res_parent == nullptr || res_player == nullptr) {
+        if(res_parent == nullptr || res_player == m_playersHash.end()) {
             return StatusType::FAILURE;
         }
         if(res_parent->val->isPlayerActive()) {
-            return res_player->get()->get_spirit();
+            return res_player->second->get_spirit();
         }
         return StatusType::FAILURE;
     } catch(std::bad_alloc &e) {
@@ -298,9 +302,11 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
         if(m_teams->object_exists(team1) && m_teams->object_exists(team2)) {
             auto team1_rep = m_teams->find_object(team1);
             auto team2_rep = m_teams->find_object(team2);
-
+            m_teamsAbility->delete_node(team2_rep->val);
+            m_teamsAbility->delete_node(team1_rep->val);
             team1_rep->val->buyTeam(team2_rep->val);
-            m_teams->delete_node(team2);
+            m_teamsAbility->insert(team1_rep->val);
+            m_teams->delete_node(team2_rep->val);
             return StatusType::SUCCESS;
         }
         return StatusType::FAILURE;

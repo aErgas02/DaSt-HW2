@@ -63,7 +63,7 @@ permutation_t Player::get_spirit() {
     return m_representative->val->get_spirit() * m_spirit;
 }
 
-void Player::updateSpirit(permutation_t const& teamSpirit, bool flag) {
+void Player::updateSpirit(permutation_t const& teamSpirit) {
     if(m_representative == nullptr) { // New Team
         m_spirit = teamSpirit * m_spirit;
         return;
@@ -71,10 +71,7 @@ void Player::updateSpirit(permutation_t const& teamSpirit, bool flag) {
         // Updating the representative spirit
         m_spirit = teamSpirit * m_spirit;
     } else {
-        if(flag)
-            m_spirit = m_representative->val->get_spirit().inv() * teamSpirit * m_spirit;
-        else
-            m_spirit = teamSpirit * m_spirit;
+        m_spirit = teamSpirit * m_spirit;
     }
 }
 

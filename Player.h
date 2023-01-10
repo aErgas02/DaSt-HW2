@@ -26,7 +26,7 @@ public:
     void updateNumOfCards(int numOfCards);
     void updateNumOfGames(int by);
     void changePlayerStatus();
-    void updateSpirit(permutation_t const& teamSpirit, bool flag);
+    void updateSpirit(permutation_t const& teamSpirit);
 
     UFNode<std::shared_ptr<Player>> &getRepresentative();
     void updateRepresentative(UFNode<std::shared_ptr<Player>> &new_representative);

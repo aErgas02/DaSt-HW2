@@ -7,6 +7,10 @@
 Team::Team(int teamId, UnionFind<std::shared_ptr<Player>>& players) :
     m_id(teamId),
     m_teamSpirit(permutation_t().neutral()),
+    m_numOfGoalKeepers(0),
+    m_score(0),
+    m_teamSize(0),
+    m_ability(0),
     m_players(&players)
     {}
 
@@ -35,7 +39,6 @@ void Team::addGoalKeeper() {
 }
 
 void Team::updateScore(int byAmount) {
-    updateTeamAbility(byAmount);
     m_score += byAmount;
 }
 
@@ -49,7 +52,7 @@ void Team::updateRepresentative(UFNode<std::shared_ptr<Player>> *player) {
         m_representativePlayer = player;
     } else {
         m_players->unify(*m_representativePlayer, *player);
-        player->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit, true);
+        player->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit);
         updatePlayerNumGames(player->val);
     }
     player->val->updateRepresentative(*m_representativePlayer);
@@ -99,17 +102,22 @@ void Team::buyTeam(std::shared_ptr<Team>& team2) {
         update_team(team2);
     } else if(m_representativePlayer->height >= team2->m_representativePlayer->height) {
         // Team1 is bigger
-        team2->m_representativePlayer->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit, true);
+        team2->m_representativePlayer->val->updateSpirit(m_representativePlayer->val->get_spirit().inv() * m_teamSpirit);
         team2->m_representativePlayer->val->updateNumOfGames(-m_representativePlayer->val->get_numOfGames());
         team2->m_representativePlayer->val->updateRepresentative(*m_representativePlayer);
-        m_teamSpirit = m_teamSpirit * team2->m_teamSpirit;
+        updateTeamSpirit(team2->m_teamSpirit);
+        m_ability += team2->m_ability;
+        m_numOfGoalKeepers += team2->m_numOfGoalKeepers;
         m_players->unify(*m_representativePlayer, *team2->m_representativePlayer);
     } else {
         // Team2 is bigger
         m_representativePlayer->val->updateNumOfGames(-team2->m_representativePlayer->val->get_numOfGames());
-        team2->m_representativePlayer->val->updateSpirit(m_teamSpirit, true);
-        m_representativePlayer->val->updateSpirit(team2->m_representativePlayer->val->get_spirit().inv(), true);
+        team2->m_representativePlayer->val->updateSpirit(m_teamSpirit);
+        m_representativePlayer->val->updateSpirit(team2->m_representativePlayer->val->get_spirit().inv());
         m_representativePlayer->val->updateRepresentative(*team2->m_representativePlayer);
+        updateTeamSpirit(team2->m_teamSpirit);
+        team2->m_ability += m_ability;
+        team2->m_numOfGoalKeepers += m_numOfGoalKeepers;
         m_players->unify(*team2->m_representativePlayer, *m_representativePlayer);
     }
 }

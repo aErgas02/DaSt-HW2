@@ -24,7 +24,6 @@ public:
 
     void updateScore(int byAmount);
     UFNode<std::shared_ptr<Player>>* get_representative() const;
-    UFNode<std::shared_ptr<Player>>& getLastNode();
 
     void updateTeamSpirit(permutation_t spirit);
     void updateTeamAbility(int ability);
@@ -35,11 +34,11 @@ public:
 
 private:
     int m_id;
-    permutation_t m_teamSpirit;
-    int m_numOfGoalKeepers = 0;
-    int m_score = 0;
-    int m_teamSize = 0;
-    int m_ability = 0;
+    permutation_t m_teamSpirit = permutation_t().neutral();
+    int m_numOfGoalKeepers;
+    int m_score;
+    int m_teamSize;
+    int m_ability;
 
     void increaseTeamSize();
     void addGoalKeeper();
